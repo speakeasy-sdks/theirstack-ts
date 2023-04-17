@@ -26,6 +26,7 @@ jobs:
       openapi_doc_auth_header: x-api-key
       languages: |-
         - typescript
+      publish_typescript: true
       mode: pr
     secrets:
       speakeasy_api_key: ${{ secrets.SPEAKEASY_PROD_API_KEY }}
