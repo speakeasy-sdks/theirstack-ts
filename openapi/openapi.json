@@ -1056,15 +1056,7 @@
                    "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
                    "required":false,
                    "schema":{
-                      "title":"New Companies",
-                      "enum":[
-                         "true",
-                         "false",
-                         "all"
-                      ],
-                      "type":"string",
-                      "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
-                      "default":"all"
+                      "$ref":"#/components/schemas/NewCompanies",
                    },
                    "name":"new_companies",
                    "in":"query"
@@ -2265,6 +2257,17 @@
             "type":"string",
             "description":"Order by field. Descending",
             "default":""
+          },
+          "NewCompanies": {
+            "title":"New Companies",
+            "enum":[
+               "true",
+               "false",
+               "all"
+            ],
+            "type":"string",
+            "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+            "default":"all"
           },
           "Company":{
              "title":"Company",
