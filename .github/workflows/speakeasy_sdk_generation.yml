@@ -22,7 +22,7 @@ jobs:
     with:
       force: ${{ github.event.inputs.force }}
       speakeasy_version: latest
-      openapi_doc_location: https://prod.speakeasyapi.dev/v1/apis/TheirStack/version/v1/schema/download
+      openapi_doc_location: ./openapi/openapi.json
       openapi_doc_auth_header: x-api-key
       languages: |-
         - typescript
