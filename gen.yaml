@@ -5,6 +5,6 @@ generation:
   sdkFlattening: true
   singleTagPerOp: false
 typescript:
-  version: ""
-  author: TheirStack
-  packageName: theirstack
+  version: "1.0.0"
+  author: Speakeasy
+  packageName: @speakeasy-sdks/theirstack
