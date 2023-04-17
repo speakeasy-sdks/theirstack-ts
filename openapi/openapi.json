@@ -1,0 +1,3412 @@
+{
+    "openapi":"3.0.2",
+    "info":{
+       "title":"TheirStack API",
+       "description":"\n\n## Introduction\n\nThis is [TheirStack.com](https://TheirStack.com) API. [Create an account here](https://theirstack.com/signup).\n\nThis documentation has two versions. You can open it [in Swagger](/openapi):\n\n<a href=\"/openapi\"><img src=\"/img/swagger-logo-horizontal.jpeg\" alt=\"Open in Swagger\" width=\"200\" /></a>\n\nAnd you can open it also [in ReDoc](/) (the default when you visit [api.theirstack.com](https://api.theirstack.com))\n\n<a href=\"/\"><img src=\"/img/redoc-logo.png\" alt=\"Open in ReDoc\" width=\"200\" /></a>\n\n<br/>\n\n### What is TheirStack? \n\nIt's a platform that enables market research based on attributes like\n- what roles companies are hiring for\n- what technologies companies are using\n- what are all the companies using any given technologies\n- what are the jobs from companies fitting certain criteria\n- what are some companies with N number of people in a given department\n\nAnd much more, letting you filter by countries, industries, cities, etc. \n\n## Who is TheirStack for?\n\nIf you're building a SaaS with integrations with other products, you can use our API to find companies using them. Or to enrich your signups and know the stack of the companies that sign up for your product.\n\nIf you're a recruiting agency, you can use Theirstack to know what companies are growing the most and may need help hiring.\n\nOr if you're an investor, you may want to know the companies hiring the most people in your country. We have that data as well\n\n\n\n\n## Credits and billing\nOne credit equals one new company returned from our API. You don't consume credits if you retrieve the same company more than once. To control whether you fetch new companies or not, you can use the `new_companies` parameter. \n\nUsers on the free plan have 20 credits per billing cycle, and can only see the first 5 results for each endpoint. They can use all the parameters for all the endpoints. \n\nTo know how many credits you have left, check your limits with the [`/users/me`](/#operation/Current_user_details_users_me_get) endpoint.\n\nPaid users have more credits and can see as many results as they want paginated endpoints, with the `page` and `limit` parameters.\n\n\n### Upgrading your plan\n\nTo upgrade to a plan with higher limits, [shoot us an email](mailto:xoel@theirstack.com) or book a demo with our founder [here](https://calendly.com/xoel-1/theirstack).\n\n\n\n# Authentication\n\nAfter calling the `/signup` or `/token` endpoints, you get a short-lived Bearer token. Also, when you sign up, a non-expiring Bearer token is automatically generated for you. To see it, make a request to /users/me.\n\nThen, you can use any of those tokens to access the API. You can pass the token as a Bearer header, as a cookie (named `token`) or as a query parameter also named `token`.\n\n",
+       "version":"0.0.1"
+    },
+    "servers":[
+       {
+          "url":"https://api.theirstack.com"
+       }
+    ],
+    "security":[
+        {
+           "APIKeyQuery":[
+              
+           ]
+        },
+        {
+           "APIKeyCookie":[
+              
+           ]
+        },
+        {
+           "Bearer":[
+              
+           ]
+        },
+        {
+           "OAuth2PasswordBearer":[
+              
+           ]
+        }
+    ],
+    "paths":{
+       "/users/me":{
+          "get":{
+             "tags":[
+                "Users"
+             ],
+             "summary":"Current User Details",
+             "description":"Retrieves the details of the logged-in user, including their limits, consumed and available credits for the current billing cycle.",
+             "operationId":"Current_user_details_users_me_get",
+             "x-speakeasy-name-override": "me",
+             "responses":{
+                "200":{
+                   "description":"Successful Response",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/UserWithCreditsInfo"
+                         }
+                      }
+                   }
+                }
+             }
+          }
+       },
+       "/v0/technologies":{
+          "get":{
+             "tags":[
+                "Technologies"
+             ],
+             "summary":"Get Technologies",
+             "description":"This endpoint lets you:\n- List all the technologies we track\n- Search for any given technology. Pass a `name_pattern` parameter (case-insensitive, can be a regex pattern)\n- List the technologies within one or several categories. Pass a `category_pattern` parameter (case-insensitive, can be a regex pattern)\n\nCalls to this endpoint don't cost you credits.",
+             "operationId":"Get_technologies_v0_technologies__get",
+             "parameters":[
+                {
+                   "description":"Regex pattern of a technology name, case-insensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Name Pattern",
+                      "type":"string",
+                      "description":"Regex pattern of a technology name, case-insensitive"
+                   },
+                   "name":"name_pattern",
+                   "in":"query"
+                },
+                {
+                   "description":"Regex patter of a technology category, case-insensitive. For example, `data|storage|queue` to find data tools.",
+                   "required":false,
+                   "schema":{
+                      "title":"Category Pattern",
+                      "type":"string",
+                      "description":"Regex patter of a technology category, case-insensitive. For example, `data|storage|queue` to find data tools."
+                   },
+                   "name":"category_pattern",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Page",
+                      "type":"integer",
+                      "default":0
+                   },
+                   "name":"page",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Limit",
+                      "type":"integer",
+                      "default":25
+                   },
+                   "name":"limit",
+                   "in":"query"
+                }
+             ],
+             "responses":{
+                "200":{
+                   "description":"Successful Response",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "title":"Response Get Technologies V0 Technologies  Get",
+                            "type":"array",
+                            "items":{
+                               "$ref":"#/components/schemas/TechnologyAggregated"
+                            }
+                         }
+                      }
+                   }
+                },
+                "422":{
+                   "description":"Validation Error",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/HTTPValidationError"
+                         }
+                      }
+                   }
+                }
+             },
+            "security": 
+             []
+          }
+       },
+       "/v0/jobs/search":{
+          "post":{
+             "tags":[
+                "Jobs"
+             ],
+             "summary":"Search Jobs",
+             "description":"This endpoints lets you find the most recent jobs, filter them by companies, technologies or any pattern in the job description.",
+             "operationId":"Search_jobs_v0_jobs_search_post",
+             "parameters":[
+                {
+                   "description":"ISO 8601 date string (yyyy-mm-dd). Only jobs published in this date or after will be returned.",
+                   "required":false,
+                   "schema":{
+                      "title":"Since",
+                      "type":"string",
+                      "description":"ISO 8601 date string (yyyy-mm-dd). Only jobs published in this date or after will be returned.",
+                      "format":"date"
+                   },
+                   "name":"since",
+                   "in":"query"
+                },
+                {
+                   "description":"ISO 8601 date string (yyyy-mm-dd). Only jobs published in this date or before will be returned.",
+                   "required":false,
+                   "schema":{
+                      "title":"Until",
+                      "type":"string",
+                      "description":"ISO 8601 date string (yyyy-mm-dd). Only jobs published in this date or before will be returned.",
+                      "format":"date"
+                   },
+                   "name":"until",
+                   "in":"query"
+                },
+                {
+                   "description":"2-letter ISO country code of the location of the job. Can pass more than 1",
+                   "required":false,
+                   "schema":{
+                      "title":"Country Codes",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"2-letter ISO country code of the location of the job. Can pass more than 1",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"country_codes",
+                   "in":"query"
+                },
+                {
+                   "description":"2-letter ISO country code of the location of the job. Can pass more than 1. Will exclude jobs from these countries",
+                   "required":false,
+                   "schema":{
+                      "title":"Country Codes Exclude",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"2-letter ISO country code of the location of the job. Can pass more than 1. Will exclude jobs from these countries",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"country_codes_exclude",
+                   "in":"query"
+                },
+                {
+                   "description":"Will return jobs where any of these technologies appear. Case sensitive. Pass exact names. Check out all the technologies we track at https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit#gid=1486730285. If you pass more than one technology, we will return jobs that mentnion all of the technologies.",
+                   "required":false,
+                   "schema":{
+                      "title":"Technologies Or",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Will return jobs where any of these technologies appear. Case sensitive. Pass exact names. Check out all the technologies we track at https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit#gid=1486730285. If you pass more than one technology, we will return jobs that mentnion all of the technologies.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"technologies_or",
+                   "in":"query"
+                },
+                {
+                   "description":"Will return jobs from companies that that have mentioned any of these technologies in their jobs (not necessarily in the jobs returned). Case sensitive. Pass exact names. Check out all the technologies we track at https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit#gid=1486730285.",
+                   "required":false,
+                   "schema":{
+                      "title":"Company Technologies",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Will return jobs from companies that that have mentioned any of these technologies in their jobs (not necessarily in the jobs returned). Case sensitive. Pass exact names. Check out all the technologies we track at https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit#gid=1486730285.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"company_technologies",
+                   "in":"query"
+                },
+                {
+                   "description":"Regex patterns to match job locations. Case-insensitive. Only jobs with location that match all patterns will be returned.",
+                   "required":false,
+                   "schema":{
+                      "title":"Location Patterns",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Regex patterns to match job locations. Case-insensitive. Only jobs with location that match all patterns will be returned.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"location_patterns",
+                   "in":"query"
+                },
+                {
+                   "description":"Regex patterns to match job locations. Case-insensitive. Only jobs with location that do not match any of the patterns will be returned.",
+                   "required":false,
+                   "schema":{
+                      "title":"Location Patterns Exclude",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Regex patterns to match job locations. Case-insensitive. Only jobs with location that do not match any of the patterns will be returned.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"location_patterns_exclude",
+                   "in":"query"
+                },
+                {
+                   "description":"Regex patterns to match job sources. Case-insensitive.",
+                   "required":false,
+                   "schema":{
+                      "title":"Scraper Name Patterns",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Regex patterns to match job sources. Case-insensitive.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"scraper_name_patterns",
+                   "in":"query"
+                },
+                {
+                   "description":"Only return YC companies",
+                   "required":false,
+                   "schema":{
+                      "title":"Only Yc Companies",
+                      "type":"boolean",
+                      "description":"Only return YC companies",
+                      "default":false
+                   },
+                   "name":"only_yc_companies",
+                   "in":"query"
+                },
+                {
+                   "description":"Number of days to look back for jobs. By default, only jobs published in the last 7 days are returned.",
+                   "required":false,
+                   "schema":{
+                      "title":"Fromage",
+                      "type":"integer",
+                      "description":"Number of days to look back for jobs. By default, only jobs published in the last 7 days are returned."
+                   },
+                   "name":"fromage",
+                   "in":"query"
+                },
+                {
+                   "description":"Regex pattern to look for in job descriptions. Useful to detect companies using certain technologies that don't appear in the /technologies endpoint, or anything else mentioned in job descriptions. Case insensitive.",
+                   "required":false,
+                   "schema":{
+                      "title":"Job Description Pattern",
+                      "type":"string",
+                      "description":"Regex pattern to look for in job descriptions. Useful to detect companies using certain technologies that don't appear in the /technologies endpoint, or anything else mentioned in job descriptions. Case insensitive."
+                   },
+                   "name":"job_description_pattern",
+                   "in":"query"
+                },
+                {
+                   "description":"Case-insensitive patterns to match in the company description. Will return companies that match any of the patterns.",
+                   "required":false,
+                   "schema":{
+                      "title":"Company Description Patterns Or",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Case-insensitive patterns to match in the company description. Will return companies that match any of the patterns.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"company_description_patterns_or",
+                   "in":"query"
+                },
+                {
+                   "description":"Case-insensitive patterns to match in the company description. Will return companies that match any of the patterns.",
+                   "required":false,
+                   "schema":{
+                      "title":"Company Description Patterns Exclude",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Case-insensitive patterns to match in the company description. Will return companies that match any of the patterns.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"company_description_patterns_exclude",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum number of employees in a company",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Employee Count",
+                      "type":"integer",
+                      "description":"Minimum number of employees in a company"
+                   },
+                   "name":"min_employee_count",
+                   "in":"query"
+                },
+                {
+                   "description":"Maximum number of employees in a company",
+                   "required":false,
+                   "schema":{
+                      "title":"Max Employee Count",
+                      "type":"integer",
+                      "description":"Maximum number of employees in a company"
+                   },
+                   "name":"max_employee_count",
+                   "in":"query"
+                },
+                {
+                   "description":"Whether to make searches on job descriptions case-sensitive or insensitive.",
+                   "required":false,
+                   "schema":{
+                      "title":"Job Description Pattern Is Case Insensitive",
+                      "type":"boolean",
+                      "description":"Whether to make searches on job descriptions case-sensitive or insensitive.",
+                      "default":true
+                   },
+                   "name":"job_description_pattern_is_case_insensitive",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum company funding, in USD",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Funding Usd",
+                      "type":"integer",
+                      "description":"Minimum company funding, in USD"
+                   },
+                   "name":"min_funding_usd",
+                   "in":"query"
+                },
+                {
+                   "description":"Maximum company funding, in USD",
+                   "required":false,
+                   "schema":{
+                      "title":"Max Funding Usd",
+                      "type":"integer",
+                      "description":"Maximum company funding, in USD"
+                   },
+                   "name":"max_funding_usd",
+                   "in":"query"
+                },
+                {
+                   "description":"True: only show remote jobs. False: only show non-remote jobs. None: show all jobs.",
+                   "required":false,
+                   "schema":{
+                      "title":"Remote",
+                      "type":"boolean",
+                      "description":"True: only show remote jobs. False: only show non-remote jobs. None: show all jobs."
+                   },
+                   "name":"remote",
+                   "in":"query"
+                },
+                {
+                   "description":"Return companies that match any of these keywords",
+                   "required":false,
+                   "schema":{
+                      "title":"Keywords Or",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Return companies that match any of these keywords",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"keywords_or",
+                   "in":"query"
+                },
+                {
+                   "description":"Include a field in the response with the total number of results. WARNING: setting this to True will make the responses much slower, or you'll very likely get timeouts. Set to true only in combination with a date filter, and to get all results, better set a high limit and iterate over pages, setting this to False.",
+                   "required":false,
+                   "schema":{
+                      "title":"Include Total Results",
+                      "type":"boolean",
+                      "description":"Include a field in the response with the total number of results. WARNING: setting this to True will make the responses much slower, or you'll very likely get timeouts. Set to true only in combination with a date filter, and to get all results, better set a high limit and iterate over pages, setting this to False.",
+                      "default":false
+                   },
+                   "name":"include_total_results",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum annual salary",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Salary Usd",
+                      "type":"number",
+                      "description":"Minimum annual salary"
+                   },
+                   "name":"min_salary_usd",
+                   "in":"query"
+                },
+                {
+                   "description":"Maximum annual salary",
+                   "required":false,
+                   "schema":{
+                      "title":"Max Salary Usd",
+                      "type":"number",
+                      "description":"Maximum annual salary"
+                   },
+                   "name":"max_salary_usd",
+                   "in":"query"
+                },
+                {
+                   "description":"Group results by a given field and get the number of jobs per group. If you pass `company`, you'll get the number of jobs per company. If you pass `job_title`, you'll get the number of jobs per job title. If you pass `location`, you'll get the number of jobs per location.",
+                   "required":false,
+                   "schema":{
+                      "title":"Group By",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Group results by a given field and get the number of jobs per group. If you pass `company`, you'll get the number of jobs per company. If you pass `job_title`, you'll get the number of jobs per job title. If you pass `location`, you'll get the number of jobs per location."
+                   },
+                   "name":"group_by",
+                   "in":"query"
+                },
+                {
+                   "description":"Order results by date or salary desc",
+                   "required":false,
+                   "schema":{
+                      "title":"Order By",
+                      "enum":[
+                         "date",
+                         "salary"
+                      ],
+                      "type":"string",
+                      "description":"Order results by date or salary desc",
+                      "default":"date"
+                   },
+                   "name":"order_by",
+                   "in":"query"
+                },
+                {
+                   "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                   "required":false,
+                   "schema":{
+                      "title":"Format",
+                      "enum":[
+                         "json",
+                         "csv"
+                      ],
+                      "type":"string",
+                      "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                      "default":"json"
+                   },
+                   "name":"format",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Page",
+                      "type":"integer",
+                      "default":0
+                   },
+                   "name":"page",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Limit",
+                      "type":"integer",
+                      "default":25
+                   },
+                   "name":"limit",
+                   "in":"query"
+                },
+                {
+                   "description":"Array of countries, or string with comma-separated country names where the company HQ belongs to. Case-sensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Countries",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array of countries, or string with comma-separated country names where the company HQ belongs to. Case-sensitive",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"countries",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string with industries, lowercase. Results will only include companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                   "required":false,
+                   "schema":{
+                      "title":"Industries",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string with industries, lowercase. Results will only include companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"industries",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string with industries, lowercase. Results will exclude companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                   "required":false,
+                   "schema":{
+                      "title":"Industries Exclude",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string with industries, lowercase. Results will exclude companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"industries_exclude",
+                   "in":"query"
+                },
+                {
+                   "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                   "required":false,
+                   "schema":{
+                      "title":"New Companies",
+                      "enum":[
+                         "true",
+                         "false",
+                         "all"
+                      ],
+                      "type":"string",
+                      "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                      "default":"all"
+                   },
+                   "name":"new_companies",
+                   "in":"query"
+                }
+             ],
+             "requestBody":{
+                "content":{
+                   "application/json":{
+                      "schema":{
+                         "$ref":"#/components/schemas/Body_search_jobs_v0_jobs_search_post"
+                      }
+                   }
+                }
+             },
+             "responses":{
+                "200":{
+                   "description":"Successful Response",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            
+                         }
+                      }
+                   }
+                },
+                "422":{
+                   "description":"Validation Error",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/HTTPValidationError"
+                         }
+                      }
+                   }
+                }
+             } 
+          }
+       },
+       "/v0/companies/search_by_url":{
+          "get":{
+             "tags":[
+                "Companies"
+             ],
+             "summary":"Enrich Companies",
+             "description":"Get enriched data for a list of companies given their domains, full URLs or emails from those companies.\n    \nCalls to this endpoint cost you credits if you hadn't fetched the companies returned before.",
+             "operationId":"Enrich_Companies_v0_companies_search_by_url_get",
+             "parameters":[
+                {
+                   "description":"Comma-sep rated list of domains. Deprecated - use the `companies_urls` parameter instead. You can pass domains, emails or full URLs to it directly.",
+                   "required":false,
+                   "deprecated":true,
+                   "schema":{
+                      "title":"Domains",
+                      "type":"string",
+                      "description":"Comma-sep rated list of domains. Deprecated - use the `companies_urls` parameter instead. You can pass domains, emails or full URLs to it directly."
+                   },
+                   "name":"domains",
+                   "in":"query"
+                },
+                {
+                   "description":"Comma-sep rated list of emails. Deprecated - use the `companies_urls` parameter instead. You can pass domains, emails or full URLs to it directly.",
+                   "required":false,
+                   "deprecated":true,
+                   "schema":{
+                      "title":"Emails",
+                      "type":"string",
+                      "description":"Comma-sep rated list of emails. Deprecated - use the `companies_urls` parameter instead. You can pass domains, emails or full URLs to it directly."
+                   },
+                   "name":"emails",
+                   "in":"query"
+                },
+                {
+                   "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                   "required":false,
+                   "schema":{
+                      "title":"Format",
+                      "enum":[
+                         "json",
+                         "csv"
+                      ],
+                      "type":"string",
+                      "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                      "default":"json"
+                   },
+                   "name":"format",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string containing domains, emails or full URLs.",
+                   "required":false,
+                   "schema":{
+                      "title":"Companies Urls",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string containing domains, emails or full URLs.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"companies_urls",
+                   "in":"query"
+                }
+             ],
+             "responses":{
+                "200":{
+                   "description":"Successful Response",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "title":"Response Enrich Companies V0 Companies Search By Url Get",
+                            "type":"array",
+                            "items":{
+                               "$ref":"#/components/schemas/CompanyWithTechnologies"
+                            }
+                         }
+                      }
+                   }
+                },
+                "422":{
+                   "description":"Validation Error",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/HTTPValidationError"
+                         }
+                      }
+                   }
+                }
+             }
+          }
+       },
+       "/v0/companies/bulk_enrich":{
+          "post":{
+             "tags":[
+                "Companies"
+             ],
+             "summary":"Bulk Enrich Companies",
+             "description":"Get enriched data for a list of companies given their domains, full URLs or emails from those companies.\n    \nCalls to this endpoint cost you credits if you hadn't fetched the companies returned before.",
+             "operationId":"Bulk_Enrich_Companies_v0_companies_bulk_enrich_post",
+             "parameters":[
+                {
+                   "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                   "required":false,
+                   "schema":{
+                      "title":"Format",
+                      "enum":[
+                         "json",
+                         "csv"
+                      ],
+                      "type":"string",
+                      "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                      "default":"json"
+                   },
+                   "name":"format",
+                   "in":"query"
+                }
+             ],
+             "requestBody":{
+                "content":{
+                   "application/json":{
+                      "schema":{
+                         "$ref":"#/components/schemas/Body_Bulk_Enrich_Companies_v0_companies_bulk_enrich_post"
+                      }
+                   }
+                }
+             },
+             "responses":{
+                "200":{
+                   "description":"Successful Response",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "title":"Response Bulk Enrich Companies V0 Companies Bulk Enrich Post",
+                            "type":"array",
+                            "items":{
+                               "$ref":"#/components/schemas/CompanyWithTechnologies"
+                            }
+                         }
+                      }
+                   }
+                },
+                "422":{
+                   "description":"Validation Error",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/HTTPValidationError"
+                         }
+                      }
+                   }
+                }
+             }
+          }
+       },
+       "/v0/companies/search":{
+          "get":{
+             "tags":[
+                "Companies"
+             ],
+             "summary":"Search Companies",
+             "description":"Search companies by industries, employee counts, technologies, open positions and more. This endpoint also lets you filter companies by the jobs they're hiring, filtering by job title, a pattern matched by job descriptions, the technologies mentioned in the jobs, and pass a `fromage` parameter to get only companies whose jobs were posted in the last X days.\n    \nCalls to this endpoint cost you credits. 1 new company returned = 1 credit. Getting data from companies already fetched doesn't cost you credits.\n\nAdditionally, you can search by the max/min of people per department. To do so, pass extra parameters with the shape `<min/max>_<department>_headcount=<value>`. For example, `min_engineering_headcount=10` will return companies with at least 10 people in the engineering department. The accepted values for `department` are:  \n    - *`sales`*  \n    - *`marketing`*  \n    - *`media_and_commmunication`*  \n    - *`business_development`*  \n    - *`accounting`*  \n    - *`operations`*  \n    - *`finance`*  \n    - *`human_resources`*  \n    - *`information_technology`*  \n    - *`legal`*  \n    - *`engineering`*  \n    - *`product_management`*  \n    - *`consulting`*  \n    - *`education`*  \n    - *`administrative`*  \n    - *`arts_and_design`*  \n    - *`entrepreneurship`*  \n    - *`support`*  \n    - *`data_science`*",
+             "operationId":"Search_companies_v0_companies_search__get",
+             "parameters":[
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Min Employee Count",
+                      "type":"integer"
+                   },
+                   "name":"min_employee_count",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Max Employee Count",
+                      "type":"integer"
+                   },
+                   "name":"max_employee_count",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Exclude Companies Pattern",
+                      "type":"string"
+                   },
+                   "name":"exclude_companies_pattern",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Include Industries Pattern",
+                      "type":"string"
+                   },
+                   "name":"include_industries_pattern",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Exclude Industries Pattern",
+                      "type":"string"
+                   },
+                   "name":"exclude_industries_pattern",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Include Cities Pattern",
+                      "type":"string"
+                   },
+                   "name":"include_cities_pattern",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Exclude Cities Pattern",
+                      "type":"string"
+                   },
+                   "name":"exclude_cities_pattern",
+                   "in":"query"
+                },
+                {
+                   "description":"Only return companies with at least this number of jobs",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Jobs",
+                      "type":"integer",
+                      "description":"Only return companies with at least this number of jobs"
+                   },
+                   "name":"min_jobs",
+                   "in":"query"
+                },
+                {
+                   "description":"- Simple example: `software developer`\n- More complex example: `engineer|developer|data|manager|director|design|product|ingenier|desarrollador`\n        ",
+                   "required":false,
+                   "schema":{
+                      "title":"Job Title Pattern",
+                      "type":"string",
+                      "description":"- Simple example: `software developer`\n- More complex example: `engineer|developer|data|manager|director|design|product|ingenier|desarrollador`\n        "
+                   },
+                   "name":"job_title_pattern",
+                   "in":"query"
+                },
+                {
+                   "description":"Regex pattern to look for in job descriptions. Useful to detect companies using certain technologies that don't appear in the /technologies endpoint, or anything else mentioned in job descriptions. Case insensitive.",
+                   "required":false,
+                   "schema":{
+                      "title":"Job Description Pattern",
+                      "type":"string",
+                      "description":"Regex pattern to look for in job descriptions. Useful to detect companies using certain technologies that don't appear in the /technologies endpoint, or anything else mentioned in job descriptions. Case insensitive."
+                   },
+                   "name":"job_description_pattern",
+                   "in":"query"
+                },
+                {
+                   "description":"Whether to make searches on job descriptions case-sensitive or insensitive.",
+                   "required":false,
+                   "schema":{
+                      "title":"Job Description Pattern Is Case Insensitive",
+                      "type":"boolean",
+                      "description":"Whether to make searches on job descriptions case-sensitive or insensitive.",
+                      "default":true
+                   },
+                   "name":"job_description_pattern_is_case_insensitive",
+                   "in":"query"
+                },
+                {
+                   "description":"Number of days to look back for jobs from the companies.",
+                   "required":false,
+                   "schema":{
+                      "title":"Fromage",
+                      "type":"integer",
+                      "description":"Number of days to look back for jobs from the companies."
+                   },
+                   "name":"fromage",
+                   "in":"query"
+                },
+                {
+                   "description":"Whether to return extra data, like headcount per department data",
+                   "required":false,
+                   "schema":{
+                      "title":"Extra",
+                      "type":"boolean",
+                      "description":"Whether to return extra data, like headcount per department data",
+                      "default":false
+                   },
+                   "name":"extra",
+                   "in":"query"
+                },
+                {
+                   "description":"Order by field. Descending",
+                   "required":false,
+                   "schema":{
+                      "title":"Order By",
+                      "enum":[
+                         "employee_count",
+                         "annual_revenue_usd",
+                         "total_funding_usd",
+                         "last_funding_round_date",
+                         "founded_year",
+                         "name",
+                         ""
+                      ],
+                      "type":"string",
+                      "description":"Order by field. Descending",
+                      "default":""
+                   },
+                   "name":"order_by",
+                   "in":"query"
+                },
+                {
+                   "description":"Whether or not to include the company description in the results.",
+                   "required":false,
+                   "schema":{
+                      "title":"Include Description",
+                      "type":"boolean",
+                      "description":"Whether or not to include the company description in the results.",
+                      "default":true
+                   },
+                   "name":"include_description",
+                   "in":"query"
+                },
+                {
+                   "description":"Don't return more than 2 companies with different names but associated to the same domain",
+                   "required":false,
+                   "schema":{
+                      "title":"Distinct Urls",
+                      "type":"boolean",
+                      "description":"Don't return more than 2 companies with different names but associated to the same domain",
+                      "default":false
+                   },
+                   "name":"distinct_urls",
+                   "in":"query"
+                },
+                {
+                   "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                   "required":false,
+                   "schema":{
+                      "title":"Format",
+                      "enum":[
+                         "json",
+                         "csv"
+                      ],
+                      "type":"string",
+                      "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                      "default":"json"
+                   },
+                   "name":"format",
+                   "in":"query"
+                },
+                {
+                   "description":"Array of countries, or string with comma-separated country names where the company HQ belongs to. Case-sensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Countries",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array of countries, or string with comma-separated country names where the company HQ belongs to. Case-sensitive",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"countries",
+                   "in":"query"
+                },
+                {
+                   "description":"Comma-separated list of company names. Must match exactly the name of a company in our database. Case insensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Companies",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Comma-separated list of company names. Must match exactly the name of a company in our database. Case insensitive",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"companies",
+                   "in":"query"
+                },
+                {
+                   "description":"Comma-separated names of technologies. Case insensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Include Technologies Any",
+                      "type":"string",
+                      "description":"Comma-separated names of technologies. Case insensitive"
+                   },
+                   "name":"include_technologies_any",
+                   "in":"query"
+                },
+                {
+                   "description":"Exclude companies using at least one technology that matches this regex pattern. Pass a comma-separated list of regex patterns, like `snowflake, big.?query`",
+                   "required":false,
+                   "schema":{
+                      "title":"Exclude Technologies",
+                      "type":"string",
+                      "description":"Exclude companies using at least one technology that matches this regex pattern. Pass a comma-separated list of regex patterns, like `snowflake, big.?query`"
+                   },
+                   "name":"exclude_technologies",
+                   "in":"query"
+                },
+                {
+                   "description":"Comma-separated names of technologies. Case insensitive. If passed, the result will include companies that use any of the technologies specified in `include_technologies_any` AND any of the technologies specified in `include_technologies_any_second_set`",
+                   "required":false,
+                   "schema":{
+                      "title":"Include Technologies Any Second Set",
+                      "type":"string",
+                      "description":"Comma-separated names of technologies. Case insensitive. If passed, the result will include companies that use any of the technologies specified in `include_technologies_any` AND any of the technologies specified in `include_technologies_any_second_set`"
+                   },
+                   "name":"include_technologies_any_second_set",
+                   "in":"query"
+                },
+                {
+                   "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                   "required":false,
+                   "schema":{
+                      "title":"New Companies",
+                      "enum":[
+                         "true",
+                         "false",
+                         "all"
+                      ],
+                      "type":"string",
+                      "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                      "default":"all"
+                   },
+                   "name":"new_companies",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Page",
+                      "type":"integer",
+                      "default":0
+                   },
+                   "name":"page",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Limit",
+                      "type":"integer",
+                      "default":25
+                   },
+                   "name":"limit",
+                   "in":"query"
+                }
+             ],
+             "responses":{
+                "200":{
+                   "description":"Successful Response",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/CompaniesResponse"
+                         }
+                      }
+                   }
+                },
+                "422":{
+                   "description":"Validation Error",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/HTTPValidationError"
+                         }
+                      }
+                   }
+                }
+             }
+          }
+       },
+       "/v0/companies/tech_details":{
+          "post":{
+             "tags":[
+                "Companies"
+             ],
+             "summary":"Get Tech Details",
+             "description":"List all the technologies used by companies, with quantitative details for each technology, for one or many companies at once, such as how many jobs were found from each technology and company in the last 180/30/7 days.\n    \nThis endpoint enables account-based marketing strategies. For example, you can find all the companies that use a specific technology, and then find out how many jobs they have posted in the last 30 days. You can then use this information to target them with a marketing campaign.",
+             "operationId":"Get_tech_details_v0_companies_tech_details_post",
+             "parameters":[
+                {
+                   "description":"List of technologies",
+                   "required":false,
+                   "schema":{
+                      "title":"Technologies",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"List of technologies",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"technologies",
+                   "in":"query"
+                },
+                {
+                   "description":"List of categories",
+                   "required":false,
+                   "schema":{
+                      "title":"Categories",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"List of categories",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"categories",
+                   "in":"query"
+                },
+                {
+                   "description":"Only return YC companies",
+                   "required":false,
+                   "schema":{
+                      "title":"Only Yc Companies",
+                      "type":"boolean",
+                      "description":"Only return YC companies",
+                      "default":false
+                   },
+                   "name":"only_yc_companies",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum number of employees in a company",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Employee Count",
+                      "type":"integer",
+                      "description":"Minimum number of employees in a company"
+                   },
+                   "name":"min_employee_count",
+                   "in":"query"
+                },
+                {
+                   "description":"Maximum number of employees in a company",
+                   "required":false,
+                   "schema":{
+                      "title":"Max Employee Count",
+                      "type":"integer",
+                      "description":"Maximum number of employees in a company"
+                   },
+                   "name":"max_employee_count",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum company funding, in USD",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Funding Usd",
+                      "type":"integer",
+                      "description":"Minimum company funding, in USD"
+                   },
+                   "name":"min_funding_usd",
+                   "in":"query"
+                },
+                {
+                   "description":"Maximum company funding, in USD",
+                   "required":false,
+                   "schema":{
+                      "title":"Max Funding Usd",
+                      "type":"integer",
+                      "description":"Maximum company funding, in USD"
+                   },
+                   "name":"max_funding_usd",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum company revenue, in USD",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Revenue Usd",
+                      "type":"integer",
+                      "description":"Minimum company revenue, in USD"
+                   },
+                   "name":"min_revenue_usd",
+                   "in":"query"
+                },
+                {
+                   "description":"Maximum company revenue, in USD",
+                   "required":false,
+                   "schema":{
+                      "title":"Max Revenue Usd",
+                      "type":"integer",
+                      "description":"Maximum company revenue, in USD"
+                   },
+                   "name":"max_revenue_usd",
+                   "in":"query"
+                },
+                {
+                   "description":"Return companies that match any of these keywords",
+                   "required":false,
+                   "schema":{
+                      "title":"Keywords Or",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Return companies that match any of these keywords",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"keywords_or",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Show Total Results",
+                      "type":"boolean",
+                      "default":false
+                   },
+                   "name":"show_total_results",
+                   "in":"query"
+                },
+                {
+                   "description":"The rank measures how common is a technology within its category. The technology most used among similar ones by a company will have a rank of 1, the second: 2, etc. This is useful to filter results by technology and get only results for the primary technology. ",
+                   "required":false,
+                   "schema":{
+                      "title":"Max Rank",
+                      "type":"integer",
+                      "description":"The rank measures how common is a technology within its category. The technology most used among similar ones by a company will have a rank of 1, the second: 2, etc. This is useful to filter results by technology and get only results for the primary technology. "
+                   },
+                   "name":"max_rank",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum number of jobs found by each company using a technology",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Jobs",
+                      "type":"integer",
+                      "description":"Minimum number of jobs found by each company using a technology"
+                   },
+                   "name":"min_jobs",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum value of relative_occurrence_within_category for each technology. Higher values increase the probability that this technology is actually used by the company, because it means a higher percentage of mentions to technologies among this category are of this technology.",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Relative Occurrence",
+                      "type":"number",
+                      "description":"Minimum value of relative_occurrence_within_category for each technology. Higher values increase the probability that this technology is actually used by the company, because it means a higher percentage of mentions to technologies among this category are of this technology."
+                   },
+                   "name":"min_relative_occurrence",
+                   "in":"query"
+                },
+                {
+                   "description":"Case-insensitive patterns to match in the company description. Will return companies that match any of the patterns.",
+                   "required":false,
+                   "schema":{
+                      "title":"Company Description Patterns Or",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Case-insensitive patterns to match in the company description. Will return companies that match any of the patterns.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"company_description_patterns_or",
+                   "in":"query"
+                },
+                {
+                   "description":"Case-insensitive patterns to match in the company description. Will return companies that match any of the patterns.",
+                   "required":false,
+                   "schema":{
+                      "title":"Company Description Patterns Exclude",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Case-insensitive patterns to match in the company description. Will return companies that match any of the patterns.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"company_description_patterns_exclude",
+                   "in":"query"
+                },
+                {
+                   "description":"Funding stages of companies returned. One of the values in the round column of https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit#gid=472436935",
+                   "required":false,
+                   "schema":{
+                      "title":"Funding Stages",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Funding stages of companies returned. One of the values in the round column of https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit#gid=472436935",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"funding_stages",
+                   "in":"query"
+                },
+                {
+                   "description":"Order the results by some of these fields",
+                   "required":false,
+                   "schema":{
+                      "title":"Order By",
+                      "anyOf":[
+                         {
+                            "enum":[
+                               null
+                            ]
+                         },
+                         {
+                            "enum":[
+                               "jobs",
+                               "jobs_last_7_days",
+                               "jobs_last_30_days",
+                               "jobs_last_180_days",
+                               "last_date_found",
+                               "first_date_found",
+                               "relative_occurrence_within_category",
+                               "theirstack_score"
+                            ],
+                            "type":"string"
+                         }
+                      ],
+                      "description":"Order the results by some of these fields"
+                   },
+                   "name":"order_by",
+                   "in":"query"
+                },
+                {
+                   "description":"Order direction",
+                   "required":false,
+                   "schema":{
+                      "title":"Order Direction",
+                      "enum":[
+                         "asc",
+                         "desc"
+                      ],
+                      "type":"string",
+                      "description":"Order direction",
+                      "default":"desc"
+                   },
+                   "name":"order_direction",
+                   "in":"query"
+                },
+                {
+                   "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                   "required":false,
+                   "schema":{
+                      "title":"Format",
+                      "enum":[
+                         "json",
+                         "csv"
+                      ],
+                      "type":"string",
+                      "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                      "default":"json"
+                   },
+                   "name":"format",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string containing technology names. If included, results won't contain companies that mention any of these technologies in their jobs.",
+                   "required":false,
+                   "schema":{
+                      "title":"Technologies Names Exclude",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string containing technology names. If included, results won't contain companies that mention any of these technologies in their jobs.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"technologies_names_exclude",
+                   "in":"query"
+                },
+                {
+                   "description":"Array of countries, or string with comma-separated country names where the company HQ belongs to. Case-sensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Countries",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array of countries, or string with comma-separated country names where the company HQ belongs to. Case-sensitive",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"countries",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string with industries, lowercase. Results will only include companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                   "required":false,
+                   "schema":{
+                      "title":"Industries",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string with industries, lowercase. Results will only include companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"industries",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string with industries, lowercase. Results will exclude companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                   "required":false,
+                   "schema":{
+                      "title":"Industries Exclude",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string with industries, lowercase. Results will exclude companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"industries_exclude",
+                   "in":"query"
+                },
+                {
+                   "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                   "required":false,
+                   "schema":{
+                      "title":"New Companies",
+                      "enum":[
+                         "true",
+                         "false",
+                         "all"
+                      ],
+                      "type":"string",
+                      "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                      "default":"all"
+                   },
+                   "name":"new_companies",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Page",
+                      "type":"integer",
+                      "default":0
+                   },
+                   "name":"page",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Limit",
+                      "type":"integer",
+                      "default":25
+                   },
+                   "name":"limit",
+                   "in":"query"
+                }
+             ],
+             "requestBody":{
+                "content":{
+                   "application/json":{
+                      "schema":{
+                         "$ref":"#/components/schemas/Body_get_tech_details_v0_companies_tech_details_post"
+                      }
+                   }
+                }
+             },
+             "responses":{
+                "200":{
+                   "description":"Successful Response",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/CompanyTechDetailsResponse"
+                         }
+                      }
+                   }
+                },
+                "422":{
+                   "description":"Validation Error",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/HTTPValidationError"
+                         }
+                      }
+                   }
+                }
+             }
+          }
+       },
+       "/v0/companies/technology_matrix":{
+          "post":{
+             "tags":[
+                "Companies"
+             ],
+             "summary":"Bulk Enrich/Prospect With Detailed Technologies (Technology Matrix)",
+             "description":"Shows a matrix of companies and the technologies they use, grouped by technology categories.\n       \nLets you search companies by their names, domains, technologies they user, countries and employee sizes.\n\nTechnology categories are shown as additional columns if `format` is `csv`, and as additional fields for each object in `data` if `format` is `json`.",
+             "operationId":"Bulk_enrich_prospect_with_detailed_technologies__technology_matrix__v0_companies_technology_matrix_post",
+             "parameters":[
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Min Employee Count",
+                      "type":"integer"
+                   },
+                   "name":"min_employee_count",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Max Employee Count",
+                      "type":"integer"
+                   },
+                   "name":"max_employee_count",
+                   "in":"query"
+                },
+                {
+                   "description":"Only return YC companies",
+                   "required":false,
+                   "schema":{
+                      "title":"Only Yc Companies",
+                      "type":"boolean",
+                      "description":"Only return YC companies",
+                      "default":false
+                   },
+                   "name":"only_yc_companies",
+                   "in":"query"
+                },
+                {
+                   "description":"Order the categories by name, or putting the ones with the least null values first",
+                   "required":false,
+                   "schema":{
+                      "title":"Order Categories By",
+                      "enum":[
+                         "percentage_non_nulls",
+                         "name"
+                      ],
+                      "type":"string",
+                      "description":"Order the categories by name, or putting the ones with the least null values first",
+                      "default":"percentage_non_nulls"
+                   },
+                   "name":"order_categories_by",
+                   "in":"query"
+                },
+                {
+                   "description":"Show the the numer of jobs where each company has mentioned each technology. If set to False, you'll only get technology names, without the job counts.",
+                   "required":false,
+                   "schema":{
+                      "title":"Show Jobs",
+                      "type":"boolean",
+                      "description":"Show the the numer of jobs where each company has mentioned each technology. If set to False, you'll only get technology names, without the job counts.",
+                      "default":true
+                   },
+                   "name":"show_jobs",
+                   "in":"query"
+                },
+                {
+                   "description":"Separator for cells in the matrix",
+                   "required":false,
+                   "schema":{
+                      "title":"Cell Separator",
+                      "type":"string",
+                      "description":"Separator for cells in the matrix",
+                      "default":"\n"
+                   },
+                   "name":"cell_separator",
+                   "in":"query"
+                },
+                {
+                   "description":"Order by field. Descending",
+                   "required":false,
+                   "schema":{
+                      "title":"Order By",
+                      "enum":[
+                         "employee_count",
+                         "num_jobs",
+                         "name",
+                         ""
+                      ],
+                      "type":"string",
+                      "description":"Order by field. Descending",
+                      "default":""
+                   },
+                   "name":"order_by",
+                   "in":"query"
+                },
+                {
+                   "description":"Don't return more than 2 companies with different names but associated to the same domain",
+                   "required":false,
+                   "schema":{
+                      "title":"Distinct Urls",
+                      "type":"boolean",
+                      "description":"Don't return more than 2 companies with different names but associated to the same domain",
+                      "default":true
+                   },
+                   "name":"distinct_urls",
+                   "in":"query"
+                },
+                {
+                   "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                   "required":false,
+                   "schema":{
+                      "title":"Format",
+                      "enum":[
+                         "json",
+                         "csv"
+                      ],
+                      "type":"string",
+                      "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                      "default":"json"
+                   },
+                   "name":"format",
+                   "in":"query"
+                },
+                {
+                   "description":"Array of countries, or string with comma-separated country names where the company HQ belongs to. Case-sensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Countries",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array of countries, or string with comma-separated country names where the company HQ belongs to. Case-sensitive",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"countries",
+                   "in":"query"
+                },
+                {
+                   "description":"Show only technologies that belong to this categories. Comma-separated list. Example: \"data, queue, storage\".",
+                   "required":false,
+                   "schema":{
+                      "title":"Categories",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Show only technologies that belong to this categories. Comma-separated list. Example: \"data, queue, storage\".",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"categories",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string containing technology names.",
+                   "required":false,
+                   "schema":{
+                      "title":"Technologies Names",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string containing technology names.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"technologies_names",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string containing technology names.If included, results will contain companies using any of the technologies specified in `technologies_names` AND any of the technologies specified in `technologies_names_second_set`",
+                   "required":false,
+                   "schema":{
+                      "title":"Technologies Names Second Set",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string containing technology names.If included, results will contain companies using any of the technologies specified in `technologies_names` AND any of the technologies specified in `technologies_names_second_set`",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"technologies_names_second_set",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string containing technology names. If included, results won't contain companies that mention any of these technologies in their jobs.",
+                   "required":false,
+                   "schema":{
+                      "title":"Technologies Names Exclude",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string containing technology names. If included, results won't contain companies that mention any of these technologies in their jobs.",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"technologies_names_exclude",
+                   "in":"query"
+                },
+                {
+                   "description":"Comma-separated names of technologies. Case insensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Include Technologies Any",
+                      "type":"string",
+                      "description":"Comma-separated names of technologies. Case insensitive"
+                   },
+                   "name":"include_technologies_any",
+                   "in":"query"
+                },
+                {
+                   "description":"Comma-separated names of technologies. Case insensitive. If passed, the result will include companies that use any of the technologies specified in `include_technologies_any` AND any of the technologies specified in `include_technologies_any_second_set`",
+                   "required":false,
+                   "schema":{
+                      "title":"Include Technologies Any Second Set",
+                      "type":"string",
+                      "description":"Comma-separated names of technologies. Case insensitive. If passed, the result will include companies that use any of the technologies specified in `include_technologies_any` AND any of the technologies specified in `include_technologies_any_second_set`"
+                   },
+                   "name":"include_technologies_any_second_set",
+                   "in":"query"
+                },
+                {
+                   "description":"Exclude companies using at least one technology that matches this regex pattern. Pass a comma-separated list of regex patterns, like `snowflake, big.?query`",
+                   "required":false,
+                   "schema":{
+                      "title":"Exclude Technologies",
+                      "type":"string",
+                      "description":"Exclude companies using at least one technology that matches this regex pattern. Pass a comma-separated list of regex patterns, like `snowflake, big.?query`"
+                   },
+                   "name":"exclude_technologies",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string with industries, lowercase. Results will only include companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                   "required":false,
+                   "schema":{
+                      "title":"Industries",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string with industries, lowercase. Results will only include companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"industries",
+                   "in":"query"
+                },
+                {
+                   "description":"Array or comma-separated string with industries, lowercase. Results will exclude companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                   "required":false,
+                   "schema":{
+                      "title":"Industries Exclude",
+                      "type":"array",
+                      "items":{
+                         "type":"string"
+                      },
+                      "description":"Array or comma-separated string with industries, lowercase. Results will exclude companies that belong to any of the industries specified in this parameter. Available values: https://docs.google.com/spreadsheets/d/1ybzFfmYH6q_sEux2Jq05ciqVsmIE-6FOpMK5mxJGmIU/edit?usp=sharing",
+                      "default":[
+                         
+                      ]
+                   },
+                   "name":"industries_exclude",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Page",
+                      "type":"integer",
+                      "default":0
+                   },
+                   "name":"page",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Limit",
+                      "type":"integer",
+                      "default":25
+                   },
+                   "name":"limit",
+                   "in":"query"
+                },
+                {
+                   "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                   "required":false,
+                   "schema":{
+                      "title":"New Companies",
+                      "enum":[
+                         "true",
+                         "false",
+                         "all"
+                      ],
+                      "type":"string",
+                      "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                      "default":"all"
+                   },
+                   "name":"new_companies",
+                   "in":"query"
+                }
+             ],
+             "requestBody":{
+                "content":{
+                   "application/json":{
+                      "schema":{
+                         "$ref":"#/components/schemas/Body_Bulk_enrich_prospect_with_detailed_technologies__technology_matrix__v0_companies_technology_matrix_post"
+                      }
+                   }
+                }
+             },
+             "responses":{
+                "200":{
+                   "description":"Successful Response",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/CompanyMatrixResponse"
+                         }
+                      }
+                   }
+                },
+                "422":{
+                   "description":"Validation Error",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/HTTPValidationError"
+                         }
+                      }
+                   }
+                }
+             }
+          }
+       },
+       "/v0/decision_makers/search":{
+          "get":{
+             "tags":[
+                "Decision makers"
+             ],
+             "summary":"Search Decision Makers",
+             "description":"We extract the people job posts tell the hired person would report to. This endpoint lets you find those decision makers associated to certain technologies, job titles or terms found in the job descriptions.",
+             "operationId":"Search_decision_makers_v0_decision_makers_search_get",
+             "parameters":[
+                {
+                   "description":"Regex pattern to match any of the technologies we track, listed on the /technologies endpoint",
+                   "required":false,
+                   "schema":{
+                      "title":"Technology Pattern",
+                      "type":"string",
+                      "description":"Regex pattern to match any of the technologies we track, listed on the /technologies endpoint"
+                   },
+                   "name":"technology_pattern",
+                   "in":"query"
+                },
+                {
+                   "description":"Regex pattern to match job titles",
+                   "required":false,
+                   "schema":{
+                      "title":"Job Title Pattern",
+                      "type":"string",
+                      "description":"Regex pattern to match job titles"
+                   },
+                   "name":"job_title_pattern",
+                   "in":"query"
+                },
+                {
+                   "description":"Country name of the company to filter by. Case sensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Country",
+                      "type":"string",
+                      "description":"Country name of the company to filter by. Case sensitive"
+                   },
+                   "name":"country",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum number of employees",
+                   "required":false,
+                   "schema":{
+                      "title":"Min Employee Count",
+                      "type":"integer",
+                      "description":"Minimum number of employees"
+                   },
+                   "name":"min_employee_count",
+                   "in":"query"
+                },
+                {
+                   "description":"Minimum number of employees",
+                   "required":false,
+                   "schema":{
+                      "title":"Max Employee Count",
+                      "type":"integer",
+                      "description":"Minimum number of employees"
+                   },
+                   "name":"max_employee_count",
+                   "in":"query"
+                },
+                {
+                   "description":"Regex pattern to search in job descriptions. Case insensitive",
+                   "required":false,
+                   "schema":{
+                      "title":"Description Pattern",
+                      "type":"string",
+                      "description":"Regex pattern to search in job descriptions. Case insensitive"
+                   },
+                   "name":"description_pattern",
+                   "in":"query"
+                },
+                {
+                   "description":"Regex pattern to match company names",
+                   "required":false,
+                   "schema":{
+                      "title":"Companies Pattern",
+                      "type":"string",
+                      "description":"Regex pattern to match company names"
+                   },
+                   "name":"companies_pattern",
+                   "in":"query"
+                },
+                {
+                   "description":"Number of days to look back for jobs",
+                   "required":false,
+                   "schema":{
+                      "title":"Fromage",
+                      "type":"integer",
+                      "description":"Number of days to look back for jobs"
+                   },
+                   "name":"fromage",
+                   "in":"query"
+                },
+                {
+                   "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                   "required":false,
+                   "schema":{
+                      "title":"Format",
+                      "enum":[
+                         "json",
+                         "csv"
+                      ],
+                      "type":"string",
+                      "description":"Format of the response. One of `json` or `csv`. Defaults to `json`.",
+                      "default":"json"
+                   },
+                   "name":"format",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Page",
+                      "type":"integer",
+                      "default":0
+                   },
+                   "name":"page",
+                   "in":"query"
+                },
+                {
+                   "required":false,
+                   "schema":{
+                      "title":"Limit",
+                      "type":"integer",
+                      "default":25
+                   },
+                   "name":"limit",
+                   "in":"query"
+                },
+                {
+                   "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                   "required":false,
+                   "schema":{
+                      "title":"New Companies",
+                      "enum":[
+                         "true",
+                         "false",
+                         "all"
+                      ],
+                      "type":"string",
+                      "description":"If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.\n\nIf `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.\n\nIf `all`, both new and fetched companies may be returned.\n\nDefaults to `all`",
+                      "default":"all"
+                   },
+                   "name":"new_companies",
+                   "in":"query"
+                }
+             ],
+             "responses":{
+                "200":{
+                   "description":"Successful Response",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "title":"Response Search Decision Makers V0 Decision Makers Search Get",
+                            "type":"array",
+                            "items":{
+                               "$ref":"#/components/schemas/DecisionMaker"
+                            }
+                         }
+                      }
+                   }
+                },
+                "422":{
+                   "description":"Validation Error",
+                   "content":{
+                      "application/json":{
+                         "schema":{
+                            "$ref":"#/components/schemas/HTTPValidationError"
+                         }
+                      }
+                   }
+                }
+             }
+          }
+       }
+    },
+    "components":{
+       "schemas":{
+          "Body_Bulk_Enrich_Companies_v0_companies_bulk_enrich_post":{
+             "title":"Body_Bulk_Enrich_Companies_v0_companies_bulk_enrich_post",
+             "type":"object",
+             "properties":{
+                "companies_fuzzy":{
+                   "title":"Companies Fuzzy",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company names. Will return companies whose name contain the substrings passed here, case-insensitively."
+                },
+                "companies":{
+                   "title":"Companies",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company names. Will return companies that match these names exactly, case-sensitively."
+                },
+                "companies_urls":{
+                   "title":"Companies Urls",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company domains, full URLs or emails"
+                }
+             }
+          },
+          "Body_Bulk_enrich_prospect_with_detailed_technologies__technology_matrix__v0_companies_technology_matrix_post":{
+             "title":"Body_Bulk_enrich_prospect_with_detailed_technologies__technology_matrix__v0_companies_technology_matrix_post",
+             "type":"object",
+             "properties":{
+                "companies":{
+                   "title":"Companies",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company names. Will return companies that match these names exactly, case-sensitively."
+                },
+                "companies_fuzzy":{
+                   "title":"Companies Fuzzy",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company names. Will return companies whose name contains the substrings passed here, case-insensitively.",
+                   "default":[
+                      
+                   ]
+                },
+                "companies_urls":{
+                   "title":"Companies Urls",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company domains, full URLs or emails"
+                }
+             }
+          },
+          "Body_get_tech_details_v0_companies_tech_details_post":{
+             "title":"Body_get_tech_details_v0_companies_tech_details_post",
+             "type":"object",
+             "properties":{
+                "companies":{
+                   "title":"Companies",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company names. Will return companies that match these names exactly, case-sensitively."
+                },
+                "companies_exclude":{
+                   "title":"Companies Exclude",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company names. Will exclude companies that match these names exactly, case-sensitively."
+                },
+                "companies_urls":{
+                   "title":"Companies Urls",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company domains, full URLs or emails"
+                }
+             }
+          },
+          "Body_search_jobs_v0_jobs_search_post":{
+             "title":"Body_search_jobs_v0_jobs_search_post",
+             "type":"object",
+             "properties":{
+                "job_title_patterns":{
+                   "title":"Job Title Patterns",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Regex patterns to match job titles. Case-insensitive. Only jobs with title that match all of these patterns will be returned."
+                },
+                "job_title_patterns_or":{
+                   "title":"Job Title Patterns Or",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Regex patterns to match job titles. Case-insensitive. Jobs whose job title matches of the filters will be returned."
+                },
+                "job_title_patterns_not":{
+                   "title":"Job Title Patterns Not",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Regex patterns to match job titles. Case-insensitive. Jobs whose job title doesn't match any of the patterns will be returned."
+                },
+                "companies":{
+                   "title":"Companies",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company names. Will return companies that match these names exactly, case-sensitively."
+                },
+                "job_ids":{
+                   "title":"Job Ids",
+                   "type":"array",
+                   "items":{
+                      "type":"integer"
+                   },
+                   "description":"Get jobs with these IDs only."
+                },
+                "companies_urls":{
+                   "title":"Companies Urls",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company domains, full URLs or emails"
+                }
+             }
+          },
+          "CompaniesResponse":{
+             "title":"CompaniesResponse",
+             "type":"object",
+             "properties":{
+                "data":{
+                   "title":"Data",
+                   "type":"array",
+                   "items":{
+                      "$ref":"#/components/schemas/Company"
+                   }
+                },
+                "metadata":{
+                   "$ref":"#/components/schemas/CompanySearchMetadata"
+                }
+             }
+          },
+          "Company":{
+             "title":"Company",
+             "type":"object",
+             "properties":{
+                "name":{
+                   "title":"Name",
+                   "type":"string",
+                   "description":"Company name",
+                   "example":"Google"
+                },
+                "url":{
+                   "title":"Url",
+                   "type":"string",
+                   "example":"google.com"
+                },
+                "industry":{
+                   "title":"Industry",
+                   "type":"string",
+                   "description":"Industry of the company",
+                   "example":"internet"
+                },
+                "country":{
+                   "title":"Country",
+                   "type":"string",
+                   "description":"Country of the company's HQ",
+                   "example":"United States"
+                },
+                "employee_count":{
+                   "title":"Employee Count",
+                   "type":"integer",
+                   "description":"Number of employees of the company",
+                   "example":7543
+                },
+                "linkedin_url":{
+                   "title":"Linkedin Url",
+                   "type":"string",
+                   "example":"http://www.linkedin.com/company/google"
+                },
+                "num_jobs":{
+                   "title":"Num Jobs",
+                   "type":"integer",
+                   "description":"Number of jobs from this company in our database",
+                   "example":746
+                },
+                "yc_batch":{
+                   "title":"Yc Batch",
+                   "type":"string",
+                   "description":"If the company went through YC, this is its batch",
+                   "example":"W21"
+                },
+                "apollo_id":{
+                   "title":"Apollo Id",
+                   "type":"string",
+                   "description":"ID of the company in Apollo",
+                   "example":"5b839bd0324d4445051f9a5a"
+                },
+                "linkedin_id":{
+                   "title":"Linkedin Id",
+                   "type":"string",
+                   "description":"ID of the company in LinkedIn"
+                },
+                "founded_year":{
+                   "title":"Founded Year",
+                   "type":"integer",
+                   "description":"Year the company was founded",
+                   "example":2019
+                },
+                "annual_revenue_usd":{
+                   "title":"Annual Revenue Usd",
+                   "type":"number",
+                   "description":"Annual revenue of the company in USD",
+                   "example":189000000.0
+                },
+                "annual_revenue_usd_readable":{
+                   "title":"Annual Revenue Usd Readable",
+                   "type":"string",
+                   "description":"Annual revenue of the company in USD, formated as an easily readable string",
+                   "example":"189M"
+                },
+                "total_funding_usd":{
+                   "title":"Total Funding Usd",
+                   "type":"integer",
+                   "description":"Funding of the company in USD",
+                   "example":500000
+                },
+                "last_funding_round_date":{
+                   "title":"Last Funding Round Date",
+                   "type":"string",
+                   "description":"Date of the last funding round of the company",
+                   "format":"date",
+                   "example":"2020-01-01"
+                },
+                "last_funding_round_amount_readable":{
+                   "title":"Last Funding Round Amount Readable",
+                   "type":"string",
+                   "description":"Amount of the last funding round of the company, formated as an easily readable string",
+                   "example":"$1.2M"
+                },
+                "employee_count_range":{
+                   "title":"Employee Count Range",
+                   "type":"string",
+                   "description":"Number range of employees at the company",
+                   "example":"1001-5000"
+                },
+                "long_description":{
+                   "title":"Long Description",
+                   "type":"string",
+                   "description":"Short description of the company",
+                   "example":"Google is a California-based multinational technology company that offers internet-related services such as a search engine, online advertising and cloud computing."
+                },
+                "seo_description":{
+                   "title":"Seo Description",
+                   "type":"string",
+                   "description":"SEO description of the company, extracted from their website"
+                },
+                "city":{
+                   "title":"City",
+                   "type":"string",
+                   "description":"City of the company's HQ",
+                   "example":"Mountain View"
+                },
+                "company_keywords":{
+                   "title":"Company Keywords",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company keywords, related to what the company does"
+                },
+                "alexa_ranking":{
+                   "title":"Alexa Ranking",
+                   "type":"integer",
+                   "description":"Alexa ranking",
+                   "example":1
+                },
+                "publicly_traded_symbol":{
+                   "title":"Publicly Traded Symbol",
+                   "type":"string",
+                   "example":"GOOG"
+                },
+                "publicly_traded_exchange":{
+                   "title":"Publicly Traded Exchange",
+                   "type":"string",
+                   "example":"NASDAQ"
+                },
+                "logo":{
+                   "title":"Logo",
+                   "maxLength":65536,
+                   "minLength":1,
+                   "type":"string",
+                   "description":"Logo of the company",
+                   "format":"uri",
+                   "example":"https://example.com/logo.png"
+                },
+                "investors":{
+                   "title":"Investors",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"List of investors in this company"
+                },
+                "funding_stage":{
+                   "title":"Funding Stage",
+                   "type":"string",
+                   "description":"Latest funding stage of the company"
+                }
+             }
+          },
+          "CompanyMatrixResponse":{
+             "title":"CompanyMatrixResponse",
+             "type":"object",
+             "properties":{
+                "data":{
+                   "title":"Data",
+                   "type":"array",
+                   "items":{
+                      "$ref":"#/components/schemas/CompanySimple"
+                   }
+                },
+                "metadata":{
+                   "$ref":"#/components/schemas/CompanySearchMetadata"
+                }
+             }
+          },
+          "CompanySearchMetadata":{
+             "title":"CompanySearchMetadata",
+             "type":"object",
+             "properties":{
+                "total_results":{
+                   "title":"Total Results",
+                   "type":"integer",
+                   "description":"Total number of results",
+                   "example":2034
+                },
+                "fetched_previously":{
+                   "title":"Fetched Previously",
+                   "type":"integer",
+                   "description":"Number of companies previously fetched",
+                   "default":0,
+                   "example":123
+                },
+                "net_new":{
+                   "title":"Net New",
+                   "type":"integer",
+                   "description":"Companies that match the search criteria and the user hasn't fetched yet",
+                   "default":0,
+                   "example":1911
+                }
+             }
+          },
+          "CompanySimple":{
+             "title":"CompanySimple",
+             "type":"object",
+             "properties":{
+                "name":{
+                   "title":"Name",
+                   "type":"string",
+                   "description":"Company name",
+                   "example":"Google"
+                },
+                "url":{
+                   "title":"Url",
+                   "type":"string",
+                   "example":"google.com"
+                },
+                "industry":{
+                   "title":"Industry",
+                   "type":"string",
+                   "description":"Industry of the company",
+                   "example":"internet"
+                },
+                "country":{
+                   "title":"Country",
+                   "type":"string",
+                   "description":"Country of the company's HQ",
+                   "example":"United States"
+                },
+                "employee_count":{
+                   "title":"Employee Count",
+                   "type":"integer",
+                   "description":"Number of employees of the company",
+                   "example":7543
+                },
+                "linkedin_url":{
+                   "title":"Linkedin Url",
+                   "type":"string",
+                   "example":"http://www.linkedin.com/company/google"
+                },
+                "num_jobs":{
+                   "title":"Num Jobs",
+                   "type":"integer",
+                   "description":"Number of jobs from this company in our database",
+                   "example":746
+                },
+                "yc_batch":{
+                   "title":"Yc Batch",
+                   "type":"string",
+                   "description":"If the company went through YC, this is its batch",
+                   "example":"W21"
+                },
+                "apollo_id":{
+                   "title":"Apollo Id",
+                   "type":"string",
+                   "description":"ID of the company in Apollo",
+                   "example":"5b839bd0324d4445051f9a5a"
+                },
+                "linkedin_id":{
+                   "title":"Linkedin Id",
+                   "type":"string",
+                   "description":"ID of the company in LinkedIn"
+                }
+             }
+          },
+          "CompanyTechDetailsResponse":{
+             "title":"CompanyTechDetailsResponse",
+             "type":"object",
+             "properties":{
+                "data":{
+                   "title":"Data",
+                   "type":"array",
+                   "items":{
+                      "$ref":"#/components/schemas/CompanyTechnology"
+                   }
+                },
+                "metadata":{
+                   "$ref":"#/components/schemas/TechDetailsMetadata"
+                }
+             }
+          },
+          "CompanyTechnology":{
+             "title":"CompanyTechnology",
+             "required":[
+                "name"
+             ],
+             "type":"object",
+             "properties":{
+                "name":{
+                   "title":"Name",
+                   "type":"string",
+                   "example":"PostgreSQL"
+                },
+                "category":{
+                   "title":"Category",
+                   "type":"string",
+                   "description":"Category of the technology",
+                   "example":"Relational Database"
+                },
+                "jobs":{
+                   "title":"Jobs",
+                   "type":"integer",
+                   "description":"Number of jobs found mentioning this technology",
+                   "example":54
+                },
+                "first_date_found":{
+                   "title":"First Date Found",
+                   "type":"string",
+                   "description":"Date when the keyword was first mentioned by the company in a job post",
+                   "format":"date"
+                },
+                "last_date_found":{
+                   "title":"Last Date Found",
+                   "type":"string",
+                   "description":"Date when the keyword was last mentioned by the company in a job post",
+                   "format":"date"
+                },
+                "rank_within_category":{
+                   "title":"Rank Within Category",
+                   "type":"integer",
+                   "description":"Measures how common this technology is among the company's jobs, compared to other technologies in the same category. The most mentioned technology in its category will have a rank of 1. This helps you infer which is the technology the company is most likely to be using, when they mention several technologies that belong to the same category."
+                },
+                "relative_occurrence_within_category":{
+                   "title":"Relative Occurrence Within Category",
+                   "type":"number",
+                   "description":"Measures the relative occurance of this technology among other technologies in the same category, in jobs by this company. If there are 10 jobs where a company mentions 3 categories, and they appear in 8, 3 and 2 jobs respectively, its relative occurrences will be 0.8, 0.3 and 0.2. This helps you infer how likely it is that the company is using this technology, when they mention several technologies that belong to the same category."
+                },
+                "theirstack_score":{
+                   "title":"Theirstack Score",
+                   "type":"number",
+                   "description":"This is a score we assign to every technology used by each company to asses how likely it is that they're using it, combining the value of `jobs` and `relative_occurrence_within_category`. The higher this value is, the higher the chances that the company uses this technology. Values lower than 1 mean it's not very likely they use it. Then, the higher the value of theirstack_score, the more likely it is that they actually use it."
+                },
+                "jobs_last_7_days":{
+                   "title":"Jobs Last 7 Days",
+                   "type":"integer",
+                   "description":"Number of jobs from the given company mentioning this technology in the last 7 days",
+                   "default":0
+                },
+                "jobs_last_30_days":{
+                   "title":"Jobs Last 30 Days",
+                   "type":"integer",
+                   "description":"Number of jobs from the given company mentioning this technology in the last 30 days",
+                   "default":0
+                },
+                "jobs_last_180_days":{
+                   "title":"Jobs Last 180 Days",
+                   "type":"integer",
+                   "description":"Number of jobs from the given company mentioning this technology in the last 180 days",
+                   "default":0
+                },
+                "job_urls":{
+                   "title":"Job Urls",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"List of URLs to jobs mentioning this technology from the given company, sorted by date_posted in descending order"
+                },
+                "job_dates_posted":{
+                   "title":"Job Dates Posted",
+                   "type":"array",
+                   "items":{
+                      "type":"string",
+                      "format":"date"
+                   },
+                   "description":"List of dates when jobs were posted mentioning this technology from the given company, sorted by date_posted in descending order"
+                },
+                "job_titles":{
+                   "title":"Job Titles",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"List of job titles of jobs mentioning this technology from the given company, sorted by date_posted in descending order"
+                },
+                "job_ids":{
+                   "title":"Job Ids",
+                   "type":"array",
+                   "items":{
+                      "type":"integer"
+                   },
+                   "description":"List of job IDs from the given company mentioning this technology, sorted by date_posted in descending order"
+                },
+                "company_name":{
+                   "title":"Company Name",
+                   "type":"string",
+                   "description":"Company name",
+                   "example":"Google"
+                },
+                "company":{
+                   "title":"Company",
+                   "allOf":[
+                      {
+                         "$ref":"#/components/schemas/CompanyWithTechnologyNames"
+                      }
+                   ],
+                   "description":"Company object"
+                }
+             }
+          },
+          "CompanyWithTechnologies":{
+             "title":"CompanyWithTechnologies",
+             "type":"object",
+             "properties":{
+                "name":{
+                   "title":"Name",
+                   "type":"string",
+                   "description":"Company name",
+                   "example":"Google"
+                },
+                "url":{
+                   "title":"Url",
+                   "type":"string",
+                   "example":"google.com"
+                },
+                "industry":{
+                   "title":"Industry",
+                   "type":"string",
+                   "description":"Industry of the company",
+                   "example":"internet"
+                },
+                "country":{
+                   "title":"Country",
+                   "type":"string",
+                   "description":"Country of the company's HQ",
+                   "example":"United States"
+                },
+                "employee_count":{
+                   "title":"Employee Count",
+                   "type":"integer",
+                   "description":"Number of employees of the company",
+                   "example":7543
+                },
+                "linkedin_url":{
+                   "title":"Linkedin Url",
+                   "type":"string",
+                   "example":"http://www.linkedin.com/company/google"
+                },
+                "num_jobs":{
+                   "title":"Num Jobs",
+                   "type":"integer",
+                   "description":"Number of jobs from this company in our database",
+                   "example":746
+                },
+                "yc_batch":{
+                   "title":"Yc Batch",
+                   "type":"string",
+                   "description":"If the company went through YC, this is its batch",
+                   "example":"W21"
+                },
+                "apollo_id":{
+                   "title":"Apollo Id",
+                   "type":"string",
+                   "description":"ID of the company in Apollo",
+                   "example":"5b839bd0324d4445051f9a5a"
+                },
+                "linkedin_id":{
+                   "title":"Linkedin Id",
+                   "type":"string",
+                   "description":"ID of the company in LinkedIn"
+                },
+                "founded_year":{
+                   "title":"Founded Year",
+                   "type":"integer",
+                   "description":"Year the company was founded",
+                   "example":2019
+                },
+                "annual_revenue_usd":{
+                   "title":"Annual Revenue Usd",
+                   "type":"number",
+                   "description":"Annual revenue of the company in USD",
+                   "example":189000000.0
+                },
+                "annual_revenue_usd_readable":{
+                   "title":"Annual Revenue Usd Readable",
+                   "type":"string",
+                   "description":"Annual revenue of the company in USD, formated as an easily readable string",
+                   "example":"189M"
+                },
+                "total_funding_usd":{
+                   "title":"Total Funding Usd",
+                   "type":"integer",
+                   "description":"Funding of the company in USD",
+                   "example":500000
+                },
+                "last_funding_round_date":{
+                   "title":"Last Funding Round Date",
+                   "type":"string",
+                   "description":"Date of the last funding round of the company",
+                   "format":"date",
+                   "example":"2020-01-01"
+                },
+                "last_funding_round_amount_readable":{
+                   "title":"Last Funding Round Amount Readable",
+                   "type":"string",
+                   "description":"Amount of the last funding round of the company, formated as an easily readable string",
+                   "example":"$1.2M"
+                },
+                "employee_count_range":{
+                   "title":"Employee Count Range",
+                   "type":"string",
+                   "description":"Number range of employees at the company",
+                   "example":"1001-5000"
+                },
+                "long_description":{
+                   "title":"Long Description",
+                   "type":"string",
+                   "description":"Short description of the company",
+                   "example":"Google is a California-based multinational technology company that offers internet-related services such as a search engine, online advertising and cloud computing."
+                },
+                "seo_description":{
+                   "title":"Seo Description",
+                   "type":"string",
+                   "description":"SEO description of the company, extracted from their website"
+                },
+                "city":{
+                   "title":"City",
+                   "type":"string",
+                   "description":"City of the company's HQ",
+                   "example":"Mountain View"
+                },
+                "company_keywords":{
+                   "title":"Company Keywords",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company keywords, related to what the company does"
+                },
+                "alexa_ranking":{
+                   "title":"Alexa Ranking",
+                   "type":"integer",
+                   "description":"Alexa ranking",
+                   "example":1
+                },
+                "publicly_traded_symbol":{
+                   "title":"Publicly Traded Symbol",
+                   "type":"string",
+                   "example":"GOOG"
+                },
+                "publicly_traded_exchange":{
+                   "title":"Publicly Traded Exchange",
+                   "type":"string",
+                   "example":"NASDAQ"
+                },
+                "logo":{
+                   "title":"Logo",
+                   "maxLength":65536,
+                   "minLength":1,
+                   "type":"string",
+                   "description":"Logo of the company",
+                   "format":"uri",
+                   "example":"https://example.com/logo.png"
+                },
+                "investors":{
+                   "title":"Investors",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"List of investors in this company"
+                },
+                "funding_stage":{
+                   "title":"Funding Stage",
+                   "type":"string",
+                   "description":"Latest funding stage of the company"
+                },
+                "technology_names":{
+                   "title":"Technology Names",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Names of the technologies found to be used by the company",
+                   "example":[
+                      "Kafka",
+                      "Elasticsearch"
+                   ]
+                },
+                "technologies_found":{
+                   "title":"Technologies Found",
+                   "type":"array",
+                   "items":{
+                      "$ref":"#/components/schemas/KeywordFound"
+                   },
+                   "description":"List of technologies found to be used by the company"
+                }
+             }
+          },
+          "CompanyWithTechnologyNames":{
+             "title":"CompanyWithTechnologyNames",
+             "type":"object",
+             "properties":{
+                "name":{
+                   "title":"Name",
+                   "type":"string",
+                   "description":"Company name",
+                   "example":"Google"
+                },
+                "url":{
+                   "title":"Url",
+                   "type":"string",
+                   "example":"google.com"
+                },
+                "industry":{
+                   "title":"Industry",
+                   "type":"string",
+                   "description":"Industry of the company",
+                   "example":"internet"
+                },
+                "country":{
+                   "title":"Country",
+                   "type":"string",
+                   "description":"Country of the company's HQ",
+                   "example":"United States"
+                },
+                "employee_count":{
+                   "title":"Employee Count",
+                   "type":"integer",
+                   "description":"Number of employees of the company",
+                   "example":7543
+                },
+                "linkedin_url":{
+                   "title":"Linkedin Url",
+                   "type":"string",
+                   "example":"http://www.linkedin.com/company/google"
+                },
+                "num_jobs":{
+                   "title":"Num Jobs",
+                   "type":"integer",
+                   "description":"Number of jobs from this company in our database",
+                   "example":746
+                },
+                "yc_batch":{
+                   "title":"Yc Batch",
+                   "type":"string",
+                   "description":"If the company went through YC, this is its batch",
+                   "example":"W21"
+                },
+                "apollo_id":{
+                   "title":"Apollo Id",
+                   "type":"string",
+                   "description":"ID of the company in Apollo",
+                   "example":"5b839bd0324d4445051f9a5a"
+                },
+                "linkedin_id":{
+                   "title":"Linkedin Id",
+                   "type":"string",
+                   "description":"ID of the company in LinkedIn"
+                },
+                "founded_year":{
+                   "title":"Founded Year",
+                   "type":"integer",
+                   "description":"Year the company was founded",
+                   "example":2019
+                },
+                "annual_revenue_usd":{
+                   "title":"Annual Revenue Usd",
+                   "type":"number",
+                   "description":"Annual revenue of the company in USD",
+                   "example":189000000.0
+                },
+                "annual_revenue_usd_readable":{
+                   "title":"Annual Revenue Usd Readable",
+                   "type":"string",
+                   "description":"Annual revenue of the company in USD, formated as an easily readable string",
+                   "example":"189M"
+                },
+                "total_funding_usd":{
+                   "title":"Total Funding Usd",
+                   "type":"integer",
+                   "description":"Funding of the company in USD",
+                   "example":500000
+                },
+                "last_funding_round_date":{
+                   "title":"Last Funding Round Date",
+                   "type":"string",
+                   "description":"Date of the last funding round of the company",
+                   "format":"date",
+                   "example":"2020-01-01"
+                },
+                "last_funding_round_amount_readable":{
+                   "title":"Last Funding Round Amount Readable",
+                   "type":"string",
+                   "description":"Amount of the last funding round of the company, formated as an easily readable string",
+                   "example":"$1.2M"
+                },
+                "employee_count_range":{
+                   "title":"Employee Count Range",
+                   "type":"string",
+                   "description":"Number range of employees at the company",
+                   "example":"1001-5000"
+                },
+                "long_description":{
+                   "title":"Long Description",
+                   "type":"string",
+                   "description":"Short description of the company",
+                   "example":"Google is a California-based multinational technology company that offers internet-related services such as a search engine, online advertising and cloud computing."
+                },
+                "seo_description":{
+                   "title":"Seo Description",
+                   "type":"string",
+                   "description":"SEO description of the company, extracted from their website"
+                },
+                "city":{
+                   "title":"City",
+                   "type":"string",
+                   "description":"City of the company's HQ",
+                   "example":"Mountain View"
+                },
+                "company_keywords":{
+                   "title":"Company Keywords",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Company keywords, related to what the company does"
+                },
+                "alexa_ranking":{
+                   "title":"Alexa Ranking",
+                   "type":"integer",
+                   "description":"Alexa ranking",
+                   "example":1
+                },
+                "publicly_traded_symbol":{
+                   "title":"Publicly Traded Symbol",
+                   "type":"string",
+                   "example":"GOOG"
+                },
+                "publicly_traded_exchange":{
+                   "title":"Publicly Traded Exchange",
+                   "type":"string",
+                   "example":"NASDAQ"
+                },
+                "logo":{
+                   "title":"Logo",
+                   "maxLength":65536,
+                   "minLength":1,
+                   "type":"string",
+                   "description":"Logo of the company",
+                   "format":"uri",
+                   "example":"https://example.com/logo.png"
+                },
+                "investors":{
+                   "title":"Investors",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"List of investors in this company"
+                },
+                "funding_stage":{
+                   "title":"Funding Stage",
+                   "type":"string",
+                   "description":"Latest funding stage of the company"
+                },
+                "technology_names":{
+                   "title":"Technology Names",
+                   "type":"array",
+                   "items":{
+                      "type":"string"
+                   },
+                   "description":"Names of the technologies found to be used by the company",
+                   "example":[
+                      "Kafka",
+                      "Elasticsearch"
+                   ]
+                }
+             }
+          },
+          "DecisionMaker":{
+             "title":"DecisionMaker",
+             "type":"object",
+             "properties":{
+                "decision_maker":{
+                   "title":"Decision Maker",
+                   "type":"string",
+                   "example":"Head of Data"
+                },
+                "company_name":{
+                   "title":"Company Name",
+                   "type":"string",
+                   "example":"Zoom"
+                },
+                "date_posted":{
+                   "title":"Date Posted",
+                   "type":"string",
+                   "format":"date"
+                },
+                "technology":{
+                   "title":"Technology",
+                   "type":"string",
+                   "example":"Kafka"
+                },
+                "url":{
+                   "title":"Url",
+                   "type":"string",
+                   "description":"URL of the job post"
+                },
+                "country":{
+                   "title":"Country",
+                   "type":"string",
+                   "description":"Country of the company",
+                   "example":"United States"
+                },
+                "job_title":{
+                   "title":"Job Title",
+                   "type":"string",
+                   "description":"Job title of the job post where the decision maker was found",
+                   "example":"Senior Data Engineer"
+                },
+                "employee_count":{
+                   "title":"Employee Count",
+                   "type":"integer",
+                   "description":"Number of employees in the company",
+                   "example":"437"
+                }
+             }
+          },
+          "HTTPValidationError":{
+             "title":"HTTPValidationError",
+             "type":"object",
+             "properties":{
+                "detail":{
+                   "title":"Detail",
+                   "type":"array",
+                   "items":{
+                      "$ref":"#/components/schemas/ValidationError"
+                   }
+                }
+             }
+          },
+          "KeywordFound":{
+             "title":"KeywordFound",
+             "required":[
+                "name"
+             ],
+             "type":"object",
+             "properties":{
+                "name":{
+                   "title":"Name",
+                   "type":"string",
+                   "example":"PostgreSQL"
+                },
+                "category":{
+                   "title":"Category",
+                   "type":"string",
+                   "description":"Category of the technology",
+                   "example":"Relational Database"
+                },
+                "jobs":{
+                   "title":"Jobs",
+                   "type":"integer",
+                   "description":"Number of jobs found mentioning this technology",
+                   "example":54
+                },
+                "first_date_found":{
+                   "title":"First Date Found",
+                   "type":"string",
+                   "description":"Date when the keyword was first mentioned by the company in a job post",
+                   "format":"date"
+                },
+                "last_date_found":{
+                   "title":"Last Date Found",
+                   "type":"string",
+                   "description":"Date when the keyword was last mentioned by the company in a job post",
+                   "format":"date"
+                },
+                "rank_within_category":{
+                   "title":"Rank Within Category",
+                   "type":"integer",
+                   "description":"Measures how common this technology is among the company's jobs, compared to other technologies in the same category. The most mentioned technology in its category will have a rank of 1. This helps you infer which is the technology the company is most likely to be using, when they mention several technologies that belong to the same category."
+                },
+                "relative_occurrence_within_category":{
+                   "title":"Relative Occurrence Within Category",
+                   "type":"number",
+                   "description":"Measures the relative occurance of this technology among other technologies in the same category, in jobs by this company. If there are 10 jobs where a company mentions 3 categories, and they appear in 8, 3 and 2 jobs respectively, its relative occurrences will be 0.8, 0.3 and 0.2. This helps you infer how likely it is that the company is using this technology, when they mention several technologies that belong to the same category."
+                },
+                "theirstack_score":{
+                   "title":"Theirstack Score",
+                   "type":"number",
+                   "description":"This is a score we assign to every technology used by each company to asses how likely it is that they're using it, combining the value of `jobs` and `relative_occurrence_within_category`. The higher this value is, the higher the chances that the company uses this technology. Values lower than 1 mean it's not very likely they use it. Then, the higher the value of theirstack_score, the more likely it is that they actually use it."
+                },
+                "jobs_last_7_days":{
+                   "title":"Jobs Last 7 Days",
+                   "type":"integer",
+                   "description":"Number of jobs from the given company mentioning this technology in the last 7 days",
+                   "default":0
+                },
+                "jobs_last_30_days":{
+                   "title":"Jobs Last 30 Days",
+                   "type":"integer",
+                   "description":"Number of jobs from the given company mentioning this technology in the last 30 days",
+                   "default":0
+                },
+                "jobs_last_180_days":{
+                   "title":"Jobs Last 180 Days",
+                   "type":"integer",
+                   "description":"Number of jobs from the given company mentioning this technology in the last 180 days",
+                   "default":0
+                }
+             }
+          },
+          "TechDetailsMetadata":{
+             "title":"TechDetailsMetadata",
+             "type":"object",
+             "properties":{
+                "total_results":{
+                   "title":"Total Results",
+                   "type":"integer",
+                   "description":"Total number of results",
+                   "example":2034
+                },
+                "total_companies":{
+                   "title":"Total Companies",
+                   "type":"integer",
+                   "description":"Total number of companies",
+                   "example":1045
+                }
+             }
+          },
+          "TechnologyAggregated":{
+             "title":"TechnologyAggregated",
+             "required":[
+                "name"
+             ],
+             "type":"object",
+             "properties":{
+                "name":{
+                   "title":"Name",
+                   "type":"string",
+                   "example":"PostgreSQL"
+                },
+                "category":{
+                   "title":"Category",
+                   "type":"string",
+                   "description":"Category of the technology",
+                   "example":"Relational Database"
+                },
+                "jobs":{
+                   "title":"Jobs",
+                   "type":"integer",
+                   "description":"Number of jobs found mentioning this technology"
+                },
+                "companies":{
+                   "title":"Companies",
+                   "type":"integer",
+                   "description":"Number of companies using this technology"
+                }
+             }
+          },
+          "UserWithCreditsInfo":{
+             "title":"UserWithCreditsInfo",
+             "required":[
+                "email",
+                "id"
+             ],
+             "type":"object",
+             "properties":{
+                "email":{
+                   "title":"Email",
+                   "type":"string"
+                },
+                "is_active":{
+                   "title":"Is Active",
+                   "type":"boolean",
+                   "default":true
+                },
+                "is_superuser":{
+                   "title":"Is Superuser",
+                   "type":"boolean",
+                   "default":false
+                },
+                "first_name":{
+                   "title":"First Name",
+                   "type":"string"
+                },
+                "last_name":{
+                   "title":"Last Name",
+                   "type":"string"
+                },
+                "token":{
+                   "title":"Token",
+                   "type":"string",
+                   "description":"A JWT token that doesn't expire required to authenticate. Can be passed to authenticate via a `token` query parameter, a `token` cookie or a Bearer header"
+                },
+                "id":{
+                   "title":"Id",
+                   "type":"integer"
+                },
+                "max_limit":{
+                   "title":"Max Limit",
+                   "type":"integer",
+                   "description":"Maximum value of the `limit` query parameter"
+                },
+                "max_page":{
+                   "title":"Max Page",
+                   "type":"integer",
+                   "description":"Maximum value of the `page` query parameter"
+                },
+                "plan":{
+                   "title":"Plan",
+                   "type":"string",
+                   "description":"The plan the user is subscribed to"
+                },
+                "credits_per_billing_cycle":{
+                   "title":"Credits Per Billing Cycle",
+                   "type":"integer",
+                   "description":"Number of credits per billing cycle. Some endpoints are metered. Currently, 1 call to one of those endpoints = 1 credit"
+                },
+                "current_billing_cycle_start":{
+                   "title":"Current Billing Cycle Start",
+                   "type":"string",
+                   "description":"Start of the current billing cycle",
+                   "format":"date-time"
+                },
+                "current_billing_cycle_end":{
+                   "title":"Current Billing Cycle End",
+                   "type":"string",
+                   "description":"End of the current billign cycle",
+                   "format":"date-time"
+                },
+                "billing_cycle_length_months":{
+                   "title":"Billing Cycle Length Months",
+                   "type":"integer",
+                   "description":"Length of a billing cycle, in months. Credits will only be consumed once per company within a billing cycle.",
+                   "default":1
+                },
+                "credits_used_current_billing_cycle":{
+                   "title":"Credits Used Current Billing Cycle",
+                   "type":"integer",
+                   "description":"Number of credits used in the current billing cycle"
+                },
+                "credits_left_current_billing_cycle":{
+                   "title":"Credits Left Current Billing Cycle",
+                   "type":"integer",
+                   "description":"Number of credits left in the current billing cycle"
+                }
+             }
+          },
+          "ValidationError":{
+             "title":"ValidationError",
+             "required":[
+                "loc",
+                "msg",
+                "type"
+             ],
+             "type":"object",
+             "properties":{
+                "loc":{
+                   "title":"Location",
+                   "type":"array",
+                   "items":{
+                      "anyOf":[
+                         {
+                            "type":"string"
+                         },
+                         {
+                            "type":"integer"
+                         }
+                      ]
+                   }
+                },
+                "msg":{
+                   "title":"Message",
+                   "type":"string"
+                },
+                "type":{
+                   "title":"Error Type",
+                   "type":"string"
+                }
+             }
+          }
+       },
+       "securitySchemes":{
+          "APIKeyQuery":{
+             "type":"apiKey",
+             "in":"query",
+             "name":"token"
+          },
+          "APIKeyCookie":{
+             "type":"apiKey",
+             "in":"cookie",
+             "name":"theirstack_token"
+          },
+          "Bearer":{
+             "type":"http",
+             "scheme":"bearer"
+          },
+          "OAuth2PasswordBearer":{
+             "type":"oauth2",
+             "flows":{
+                "password":{
+                   "scopes":{
+                      
+                   },
+                   "tokenUrl":"/token"
+                }
+             }
+          }
+       }
+    },
+    "tags":[
+       {
+          "name":"Companies",
+          "description":"Operations with companies"
+       },
+       {
+          "name":"Jobs",
+          "description":"Operations with jobs"
+       },
+       {
+          "name":"Decision makers",
+          "description":"Finding decision makers"
+       },
+       {
+          "name":"Technologies",
+          "description":"To browse the technologies we track"
+       },
+       {
+        "name":"Users",
+        "description":"Get info on your account's users"
+     }
+    ],
+    "x-speakeasy-name-override":[
+        {
+            "operationId":"^Get.*",
+            "methodNameOverride":"Get"
+        },
+        {
+            "operationId":"^Search.*",
+            "methodNameOverride":"Search"
+        },
+        {
+            "operationId":"^Enrich.*",
+            "methodNameOverride":"Enrich"
+        },
+        {
+            "operationId":"^Bulk.*",
+            "methodNameOverride":"BulkEnrich"
+        }
+     ]
+ }
