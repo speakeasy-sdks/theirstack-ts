@@ -48,6 +48,7 @@ src/sdk/models/shared/bodygettechdetailsv0companiestechdetailspost.ts
 src/sdk/models/shared/companiesresponse.ts
 src/sdk/models/shared/company.ts
 src/sdk/models/shared/companyorderbyenum.ts
+src/sdk/models/shared/newcompaniesenum.ts
 src/sdk/models/shared/responseformatenum.ts
 src/sdk/models/shared/decisionmaker.ts
 src/sdk/models/shared/bodysearchjobsv0jobssearchpost.ts

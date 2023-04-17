@@ -6,23 +6,6 @@ import { SpeakeasyBase, SpeakeasyMetadata } from "../../../internal/utils";
 import * as shared from "../shared";
 import { AxiosResponse } from "axios";
 
-/**
- * If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.
- *
- * @remarks
- *
- * If `false`, only companies that have been fetched by the user will be returned. In this case, your call won't consume credits.
- *
- * If `all`, both new and fetched companies may be returned.
- *
- * Defaults to `all`
- */
-export enum SearchCompaniesNewCompaniesNewCompaniesEnum {
-  True = "true",
-  False = "false",
-  All = "all",
-}
-
 export class SearchCompaniesRequest extends SpeakeasyBase {
   /**
    * Comma-separated list of company names. Must match exactly the name of a company in our database. Case insensitive
@@ -190,7 +173,7 @@ export class SearchCompaniesRequest extends SpeakeasyBase {
   @SpeakeasyMetadata({
     data: "queryParam, style=form;explode=true;name=new_companies",
   })
-  newCompanies?: SearchCompaniesNewCompaniesNewCompaniesEnum;
+  newCompanies?: shared.NewCompaniesEnum;
 
   /**
    * Order by field. Descending
