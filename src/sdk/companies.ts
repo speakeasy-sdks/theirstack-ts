@@ -386,11 +386,11 @@ export class Companies {
    *     - *`data_science`*
    */
   search(
-    req: operations.SearchCompaniesV0CompaniesSearchGetRequest,
+    req: operations.SearchCompaniesRequest,
     config?: AxiosRequestConfig
-  ): Promise<operations.SearchCompaniesV0CompaniesSearchGetResponse> {
+  ): Promise<operations.SearchCompaniesResponse> {
     if (!(req instanceof utils.SpeakeasyBase)) {
-      req = new operations.SearchCompaniesV0CompaniesSearchGetRequest(req);
+      req = new operations.SearchCompaniesRequest(req);
     }
 
     const baseURL: string = this._serverURL;
@@ -411,8 +411,8 @@ export class Companies {
 
       if (httpRes?.status == null)
         throw new Error(`status code not found in response: ${httpRes}`);
-      const res: operations.SearchCompaniesV0CompaniesSearchGetResponse =
-        new operations.SearchCompaniesV0CompaniesSearchGetResponse({
+      const res: operations.SearchCompaniesResponse =
+        new operations.SearchCompaniesResponse({
           statusCode: httpRes.status,
           contentType: contentType,
           rawResponse: httpRes,

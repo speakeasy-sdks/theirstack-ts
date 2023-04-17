@@ -1,6 +1,6 @@
 configVersion: 1.0.0
 management:
-  docChecksum: 8f50712f0a8a7a509fae45adcaa87a8b
+  docChecksum: ae5e22dcabc7139544056a6eb5d090c1
   docVersion: 0.0.1
   speakeasyVersion: 1.20.1
   generationVersion: 2.18.1
@@ -10,6 +10,6 @@ generation:
   sdkFlattening: false
   singleTagPerOp: false
 typescript:
-  version: 2.0.0
+  version: 2.0.1
   author: Speakeasy
   packageName: '@speakeasy-sdks/theirstack'

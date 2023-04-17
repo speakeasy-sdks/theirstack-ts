@@ -7,14 +7,6 @@ import * as shared from "../shared";
 import { AxiosResponse } from "axios";
 
 /**
- * Format of the response. One of `json` or `csv`. Defaults to `json`.
- */
-export enum SearchCompaniesV0CompaniesSearchGetFormatFormatEnum {
-  Json = "json",
-  Csv = "csv",
-}
-
-/**
  * If `true`, only companies that haven't been fetched by the user will be returned. Credits will be consumed.
  *
  * @remarks
@@ -25,26 +17,13 @@ export enum SearchCompaniesV0CompaniesSearchGetFormatFormatEnum {
  *
  * Defaults to `all`
  */
-export enum SearchCompaniesV0CompaniesSearchGetNewCompaniesNewCompaniesEnum {
+export enum SearchCompaniesNewCompaniesNewCompaniesEnum {
   True = "true",
   False = "false",
   All = "all",
 }
 
-/**
- * Order by field. Descending
- */
-export enum SearchCompaniesV0CompaniesSearchGetOrderByOrderByEnum {
-  EmployeeCount = "employee_count",
-  AnnualRevenueUsd = "annual_revenue_usd",
-  TotalFundingUsd = "total_funding_usd",
-  LastFundingRoundDate = "last_funding_round_date",
-  FoundedYear = "founded_year",
-  Name = "name",
-  Unknown = "",
-}
-
-export class SearchCompaniesV0CompaniesSearchGetRequest extends SpeakeasyBase {
+export class SearchCompaniesRequest extends SpeakeasyBase {
   /**
    * Comma-separated list of company names. Must match exactly the name of a company in our database. Case insensitive
    */
@@ -104,7 +83,7 @@ export class SearchCompaniesV0CompaniesSearchGetRequest extends SpeakeasyBase {
   @SpeakeasyMetadata({
     data: "queryParam, style=form;explode=true;name=format",
   })
-  format?: SearchCompaniesV0CompaniesSearchGetFormatFormatEnum;
+  format?: shared.ResponseFormatEnum;
 
   /**
    * Number of days to look back for jobs from the companies.
@@ -211,7 +190,7 @@ export class SearchCompaniesV0CompaniesSearchGetRequest extends SpeakeasyBase {
   @SpeakeasyMetadata({
     data: "queryParam, style=form;explode=true;name=new_companies",
   })
-  newCompanies?: SearchCompaniesV0CompaniesSearchGetNewCompaniesNewCompaniesEnum;
+  newCompanies?: SearchCompaniesNewCompaniesNewCompaniesEnum;
 
   /**
    * Order by field. Descending
@@ -219,13 +198,13 @@ export class SearchCompaniesV0CompaniesSearchGetRequest extends SpeakeasyBase {
   @SpeakeasyMetadata({
     data: "queryParam, style=form;explode=true;name=order_by",
   })
-  orderBy?: SearchCompaniesV0CompaniesSearchGetOrderByOrderByEnum;
+  orderBy?: shared.CompanyOrderByEnum;
 
   @SpeakeasyMetadata({ data: "queryParam, style=form;explode=true;name=page" })
   page?: number;
 }
 
-export class SearchCompaniesV0CompaniesSearchGetResponse extends SpeakeasyBase {
+export class SearchCompaniesResponse extends SpeakeasyBase {
   /**
    * Successful Response
    */
