@@ -1,8 +1,5 @@
 <div align="center">
-    <picture>
-        <source srcset="https://user-images.githubusercontent.com/6267663/227311185-62d5759f-743c-488b-8b97-09eae1dac881.png" media="(prefers-color-scheme: dark)" width="100">
-        <img src="https://user-images.githubusercontent.com/6267663/227311185-62d5759f-743c-488b-8b97-09eae1dac881.png" width="100">
-    </picture>
+    <img src="https://user-images.githubusercontent.com/6267663/232495609-4762ddf8-5ed3-494d-a3ec-81d4ecd84c0b.svg" width="100">
     <h1>TheirStack Typescript SDK</h1>
    <p>Find companies that need your product</p>
    <a href="https://api.theirstack.com/"><img src="https://img.shields.io/static/v1?label=Docs&message=API Ref&color=000&style=for-the-badge" /></a>
@@ -10,6 +7,7 @@
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" /></a>
   <a href="https://github.com/speakeasy-sdks/theirstack-ts/releases"><img src="https://img.shields.io/github/v/release/speakeasy-sdks/theirstack-ts?sort=semver&style=for-the-badge" /></a>
 </div>
+![theirstack]()
 
 <!-- Start SDK Installation -->
 ## SDK Installation
