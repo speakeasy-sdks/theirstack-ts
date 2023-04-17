@@ -810,6 +810,7 @@
              "summary":"Search Companies",
              "description":"Search companies by industries, employee counts, technologies, open positions and more. This endpoint also lets you filter companies by the jobs they're hiring, filtering by job title, a pattern matched by job descriptions, the technologies mentioned in the jobs, and pass a `fromage` parameter to get only companies whose jobs were posted in the last X days.\n    \nCalls to this endpoint cost you credits. 1 new company returned = 1 credit. Getting data from companies already fetched doesn't cost you credits.\n\nAdditionally, you can search by the max/min of people per department. To do so, pass extra parameters with the shape `<min/max>_<department>_headcount=<value>`. For example, `min_engineering_headcount=10` will return companies with at least 10 people in the engineering department. The accepted values for `department` are:  \n    - *`sales`*  \n    - *`marketing`*  \n    - *`media_and_commmunication`*  \n    - *`business_development`*  \n    - *`accounting`*  \n    - *`operations`*  \n    - *`finance`*  \n    - *`human_resources`*  \n    - *`information_technology`*  \n    - *`legal`*  \n    - *`engineering`*  \n    - *`product_management`*  \n    - *`consulting`*  \n    - *`education`*  \n    - *`administrative`*  \n    - *`arts_and_design`*  \n    - *`entrepreneurship`*  \n    - *`support`*  \n    - *`data_science`*",
              "operationId":"Search_companies_v0_companies_search__get",
+             "x-speakeasy-usage-example": true,
              "parameters":[
                 {
                    "required":false,
@@ -1573,6 +1574,7 @@
              "summary":"Bulk Enrich/Prospect With Detailed Technologies (Technology Matrix)",
              "description":"Shows a matrix of companies and the technologies they use, grouped by technology categories.\n       \nLets you search companies by their names, domains, technologies they user, countries and employee sizes.\n\nTechnology categories are shown as additional columns if `format` is `csv`, and as additional fields for each object in `data` if `format` is `json`.",
              "operationId":"Bulk_enrich_prospect_with_detailed_technologies__technology_matrix__v0_companies_technology_matrix_post",
+             "x-speakeasy-name-override": "Bulk_enrich_with_matrix",
              "parameters":[
                 {
                    "required":false,
