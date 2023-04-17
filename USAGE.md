@@ -2,11 +2,11 @@
 ```typescript
 import {
   SearchCompaniesRequest,
-  SearchCompaniesResponse,
-  SearchCompaniesNewCompaniesNewCompaniesEnum,
+  SearchCompaniesResponse
 } from "@speakeasy-sdks/theirstack/dist/sdk/models/operations";
 import {
   CompanyOrderByEnum,
+  NewCompaniesEnum,
   ResponseFormatEnum,
 } from "@speakeasy-sdks/theirstack/dist/sdk/models/shared";
 
@@ -49,7 +49,7 @@ const req: SearchCompaniesRequest = {
   maxEmployeeCount: 812169,
   minEmployeeCount: 528895,
   minJobs: 479977,
-  newCompanies: SearchCompaniesNewCompaniesNewCompaniesEnum.False,
+  newCompanies: NewCompaniesEnum.False,
   orderBy: CompanyOrderByEnum.TotalFundingUsd,
   page: 925597,
 };

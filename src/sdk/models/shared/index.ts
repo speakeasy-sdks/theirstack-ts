@@ -18,6 +18,7 @@ export * from "./companywithtechnologies";
 export * from "./decisionmaker";
 export * from "./httpvalidationerror";
 export * from "./keywordfound";
+export * from "./newcompaniesenum";
 export * from "./responseformatenum";
 export * from "./security";
 export * from "./techdetailsmetadata";
