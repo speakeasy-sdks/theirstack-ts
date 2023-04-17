@@ -7,9 +7,9 @@ management:
 generation:
   telemetryEnabled: false
   sdkClassName: SDK
-  sdkFlattening: true
+  sdkFlattening: false
   singleTagPerOp: false
 typescript:
-  version: 2.0.2
+  version: 2.0.3
   author: Speakeasy
   packageName: '@speakeasy-sdks/theirstack'
