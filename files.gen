@@ -26,7 +26,7 @@ src/sdk/models/operations/bulkenrichcompaniesv0companiesbulkenrichpost.ts
 src/sdk/models/operations/bulkenrichprospectwithdetailedtechnologiestechnologymatrixv0companiestechnologymatrixpost.ts
 src/sdk/models/operations/enrichcompaniesv0companiessearchbyurlget.ts
 src/sdk/models/operations/gettechdetailsv0companiestechdetailspost.ts
-src/sdk/models/operations/searchcompaniesv0companiessearchget.ts
+src/sdk/models/operations/searchcompanies.ts
 src/sdk/models/operations/searchdecisionmakersv0decisionmakerssearchget.ts
 src/sdk/models/operations/searchjobsv0jobssearchpost.ts
 src/sdk/models/operations/gettechnologiesv0technologiesget.ts
@@ -47,6 +47,8 @@ src/sdk/models/shared/companytechnology.ts
 src/sdk/models/shared/bodygettechdetailsv0companiestechdetailspost.ts
 src/sdk/models/shared/companiesresponse.ts
 src/sdk/models/shared/company.ts
+src/sdk/models/shared/companyorderbyenum.ts
+src/sdk/models/shared/responseformatenum.ts
 src/sdk/models/shared/decisionmaker.ts
 src/sdk/models/shared/bodysearchjobsv0jobssearchpost.ts
 src/sdk/models/shared/technologyaggregated.ts

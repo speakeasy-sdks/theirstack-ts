@@ -20,12 +20,14 @@ yarn add @speakeasy-sdks/theirstack
 <!-- Start SDK Example Usage -->
 ```typescript
 import {
-  SearchCompaniesV0CompaniesSearchGetRequest,
-  SearchCompaniesV0CompaniesSearchGetResponse,
-  SearchCompaniesV0CompaniesSearchGetFormatFormatEnum,
-  SearchCompaniesV0CompaniesSearchGetNewCompaniesNewCompaniesEnum,
-  SearchCompaniesV0CompaniesSearchGetOrderByOrderByEnum,
+  SearchCompaniesRequest,
+  SearchCompaniesResponse,
+  SearchCompaniesNewCompaniesNewCompaniesEnum,
 } from "@speakeasy-sdks/theirstack/dist/sdk/models/operations";
+import {
+  CompanyOrderByEnum,
+  ResponseFormatEnum,
+} from "@speakeasy-sdks/theirstack/dist/sdk/models/shared";
 
 import { AxiosError } from "axios";
 import { SDK } from "@speakeasy-sdks/theirstack";
@@ -35,7 +37,7 @@ const sdk = new SDK({
   },
 });
 
-const req: SearchCompaniesV0CompaniesSearchGetRequest = {
+const req: SearchCompaniesRequest = {
   companies: [
     "provident",
     "distinctio",
@@ -52,7 +54,7 @@ const req: SearchCompaniesV0CompaniesSearchGetRequest = {
   excludeIndustriesPattern: "deserunt",
   excludeTechnologies: "suscipit",
   extra: false,
-  format: SearchCompaniesV0CompaniesSearchGetFormatFormatEnum.Json,
+  format: ResponseFormatEnum.Json,
   fromage: 297534,
   includeCitiesPattern: "debitis",
   includeDescription: false,
@@ -66,12 +68,12 @@ const req: SearchCompaniesV0CompaniesSearchGetRequest = {
   maxEmployeeCount: 812169,
   minEmployeeCount: 528895,
   minJobs: 479977,
-  newCompanies: SearchCompaniesV0CompaniesSearchGetNewCompaniesNewCompaniesEnum.False,
-  orderBy: SearchCompaniesV0CompaniesSearchGetOrderByOrderByEnum.TotalFundingUsd,
+  newCompanies: SearchCompaniesNewCompaniesNewCompaniesEnum.False,
+  orderBy: CompanyOrderByEnum.TotalFundingUsd,
   page: 925597,
 };
 
-sdk.companies.search(req).then((res: SearchCompaniesV0CompaniesSearchGetResponse | AxiosError) => {
+sdk.companies.search(req).then((res: SearchCompaniesResponse | AxiosError) => {
    // handle response
 });
 ```

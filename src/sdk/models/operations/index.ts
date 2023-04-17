@@ -8,6 +8,6 @@ export * from "./currentuserdetailsusersmeget";
 export * from "./enrichcompaniesv0companiessearchbyurlget";
 export * from "./gettechdetailsv0companiestechdetailspost";
 export * from "./gettechnologiesv0technologiesget";
-export * from "./searchcompaniesv0companiessearchget";
+export * from "./searchcompanies";
 export * from "./searchdecisionmakersv0decisionmakerssearchget";
 export * from "./searchjobsv0jobssearchpost";
